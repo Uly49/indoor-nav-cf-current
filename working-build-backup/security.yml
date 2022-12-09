@@ -1,0 +1,105 @@
+  Parameters:
+    IndoorNavVpcID:
+      Type: String
+      Description: VPC identifier
+  
+  Resources:
+    DefaultSecurityGroup:
+      Type: 'AWS::EC2::SecurityGroup'
+      Properties:
+        VpcId: !Ref IndoorNavVpcID
+        GroupDescription: Default security group
+        GroupName: Indoor-Nav
+        SecurityGroupIngress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+        Tags:
+          - Key: Name
+            Value: Indoor-Nav-default
+
+    IndoorNavGeoserverEnvProdSecurityGroup:
+      Type: 'AWS::EC2::SecurityGroup'
+      Properties:
+        VpcId: !Ref IndoorNavVpcID
+        GroupDescription: VPC security group
+        GroupName: Geoserver-env-Prod-cfn
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+        Tags:
+          - Key: Name
+            Value: Geoserver-env-Prod-cfn
+
+    IndoorNavGeoserverEnvDevSecurityGroup:
+      Type: 'AWS::EC2::SecurityGroup'
+      Properties:
+        VpcId: !Ref IndoorNavVpcID
+        GroupDescription: VPC security group
+        GroupName: Geoserver-env-Dev-cfn
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+        Tags:
+          - Key: Name
+            Value: Geoserver-env-Dev-cfn
+
+    IndoorNavPostgisEnvProdSecurityGroup:
+      Type: 'AWS::EC2::SecurityGroup'
+      Properties:
+        VpcId: !Ref IndoorNavVpcID
+        GroupDescription: VPC security group
+        GroupName: Postgis-env-prod-cfn
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+        Tags:
+          - Key: Name
+            Value: Postgis-env-prod-cfn
+
+  Outputs:
+    DefaultSecurityGroupID:
+      Value: !Ref DefaultSecurityGroup
+      Description: Default security group identifier
+
+    IndoorNavGeoserverEnvProdSecurityGroupID:
+      Value: !Ref IndoorNavGeoserverEnvProdSecurityGroup
+      Description: Geoserver-Env-Prod security group identifier
+
+    IndoorNavGeoserverEnvDevSecurityGroupID:
+      Value: !Ref IndoorNavGeoserverEnvDevSecurityGroup
+      Description: Geoserver-Env-Dev security group identifier
+      
+    IndoorNavPostgisEnvProdSecurityGroupID:
+      Value: !Ref IndoorNavPostgisEnvProdSecurityGroup
+      Description: Postgis-Env-Prod security group identifier
+    

@@ -1,0 +1,122 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Metadata:
+    Generator: "former2"
+Description: ""
+Resources:
+    EC2Instance:
+        Type: "AWS::EC2::Instance"
+        Properties:
+            ImageId: "ami-045e6bfb60639eab0"
+            InstanceType: "t2.micro"
+            KeyName: "TestPair"
+            AvailabilityZone: !GetAtt EC2Instance2.AvailabilityZone
+            Tenancy: "default"
+            SubnetId: "subnet-00a34302a8d6bb1f1"
+            EbsOptimized: false
+            SecurityGroupIds: 
+              - "sg-017d05d0dfef0e8d9"
+            SourceDestCheck: true
+            BlockDeviceMappings: 
+              - 
+                DeviceName: "/dev/xvda"
+                Ebs: 
+                    Encrypted: false
+                    VolumeSize: 8
+                    SnapshotId: "snap-02ea0a6e716bff347"
+                    VolumeType: "gp2"
+                    DeleteOnTermination: true
+            UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTEwClNMRUVQX1RJTUVfTUFYPTM2MDAKd2hpbGUgdHJ1ZTsgZG8gCiAgY3VybCBodHRwczovL2VsYXN0aWNiZWFuc3RhbGstcGxhdGZvcm0tYXNzZXRzLXVzLWVhc3QtMS5zMy5hbWF6b25hd3MuY29tL3N0YWxrcy9lYl9ub2RlanMxNl9hbWF6b25fbGludXhfMl8xLjAuMTU4Ni4wXzIwMjIwNjE2MTQyNTUxL2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgU0xFRVBfVElNRT0yCiAgICAvYmluL2Jhc2ggL3RtcC9lYmJvb3RzdHJhcC5zaCAgICAgJ2h0dHBzOi8vY2xvdWRmb3JtYXRpb24td2FpdGNvbmRpdGlvbi11cy1lYXN0LTEuczMuYW1hem9uYXdzLmNvbS9hcm4lM0Fhd3MlM0FjbG91ZGZvcm1hdGlvbiUzQXVzLWVhc3QtMSUzQTE2NzU0Mzk4NjI0NiUzQXN0YWNrL2F3c2ViLWUtM3h1cmo1dmFwZC1pbW11dGFibGUtc3RhY2svZGE0OWNkZDAtZjQwMC0xMWVjLTk0ZTMtMGVkZTM0NTE3ZjI3L0FXU0VCSW5zdGFuY2VMYXVuY2hXYWl0SGFuZGxlP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LURhdGU9MjAyMjA2MjRUMjEwMTUxWiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmWC1BbXotRXhwaXJlcz04NjM5OSZYLUFtei1DcmVkZW50aWFsPUFLSUE2TDdRNE9XVDJHWllIRzdOJTJGMjAyMjA2MjQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1TaWduYXR1cmU9ODU0YzFjNjBjMjQ2N2UxYWI3MzQ4NTIyOWZhN2FjZWVjNjU0MzdkNWUyODJjYTJjZjNkYTFiMzE2NmFlMTBiMicgICAgJ2Fybjphd3M6Y2xvdWRmb3JtYXRpb246dXMtZWFzdC0xOjE2NzU0Mzk4NjI0NjpzdGFjay9hd3NlYi1lLTN4dXJqNXZhcGQtaW1tdXRhYmxlLXN0YWNrL2RhNDljZGQwLWY0MDAtMTFlYy05NGUzLTBlZGUzNDUxN2YyNycgICAgJ2EwMGQ2YTgzLTQ1ZDItNDgwYS1iZWNiLTIxNGE3M2QxNjAzMicgICAgJ2h0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1oZWFsdGgudXMtZWFzdC0xLmFtYXpvbmF3cy5jb20nICAgICcnICAgICdodHRwczovL2VsYXN0aWNiZWFuc3RhbGstcGxhdGZvcm0tYXNzZXRzLXVzLWVhc3QtMS5zMy5hbWF6b25hd3MuY29tL3N0YWxrcy9lYl9ub2RlanMxNl9hbWF6b25fbGludXhfMl8xLjAuMTU4Ni4wXzIwMjIwNjE2MTQyNTUxJyAgICAndXMtZWFzdC0xJwogICAgUkVTVUxUPSQ/CiAgICBpZiBbWyAiJFJFU1VMVCIgLW5lIDAgXV07IHRoZW4gCiAgICAgIHNsZWVwX2RlbGF5IAogICAgZWxzZSAKICAgICAgZXhpdCAwICAKICAgIGZpIAogIGZpIApkb25lCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PS0tIA=="
+            IamInstanceProfile: "aws-elasticbeanstalk-ec2-role"
+            Tags: 
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Postgisapi-env-prod"
+              - 
+                Key: "Name"
+                Value: "Postgisapi-env-prod"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-3xurj5vapd"
+            HibernationOptions: 
+                Configured: false
+            EnclaveOptions: 
+                Enabled: false
+
+    EC2Instance2:
+        Type: "AWS::EC2::Instance"
+        Properties:
+            ImageId: "ami-0d1b64d60913b0b4c"
+            InstanceType: "t2.micro"
+            KeyName: "TestPair"
+            AvailabilityZone: !Sub "${AWS::Region}a"
+            Tenancy: "default"
+            SubnetId: "subnet-08d3135548ae2f5c5"
+            EbsOptimized: false
+            SecurityGroupIds: 
+              - "sg-0027f1316ede20614"
+            SourceDestCheck: true
+            BlockDeviceMappings: 
+              - 
+                DeviceName: "/dev/xvda"
+                Ebs: 
+                    Encrypted: false
+                    VolumeSize: 8
+                    SnapshotId: "snap-0520895bc4b74ac31"
+                    VolumeType: "gp2"
+                    DeleteOnTermination: true
+            UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTIKU0xFRVBfVElNRV9NQVg9MzYwMAp3aGlsZSB0cnVlOyBkbyAKICBjdXJsIGh0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1wbGF0Zm9ybS1hc3NldHMtdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vc3RhbGtzL2ViX3RvbWNhdDg1Y29ycmV0dG8xMV9hbWF6b25fbGludXhfMl8xLjAuMTQwOS4wXzIwMjIxMDI5MDUxMDI2L2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgL2Jpbi9iYXNoIC90bXAvZWJib290c3RyYXAuc2ggICAgICdodHRwczovL2Nsb3VkZm9ybWF0aW9uLXdhaXRjb25kaXRpb24tdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vYXJuJTNBYXdzJTNBY2xvdWRmb3JtYXRpb24lM0F1cy1lYXN0LTElM0ExNjc1NDM5ODYyNDYlM0FzdGFjay9hd3NlYi1lLXZ3YTQ0amhienAtaW1tdXRhYmxlLXN0YWNrLzdkZWUyNzkwLTVkMmItMTFlZC1hOWY1LTBhMTU1NGNhZDg3Zi9BV1NFQkluc3RhbmNlTGF1bmNoV2FpdEhhbmRsZT9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1EYXRlPTIwMjIxMTA1VDE3MDEzN1omWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JlgtQW16LUV4cGlyZXM9ODYzOTkmWC1BbXotQ3JlZGVudGlhbD1BS0lBNkw3UTRPV1QyR1pZSEc3TiUyRjIwMjIxMTA1JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotU2lnbmF0dXJlPWNjOTFkODY1YTM4MjFkYjlmNTdlN2E2MDcwODVmZWJlNTExNjgyMTE3YTIyMTVlZTEzZDRiM2JkMGQ2ZTViNmYnICAgICdhcm46YXdzOmNsb3VkZm9ybWF0aW9uOnVzLWVhc3QtMToxNjc1NDM5ODYyNDY6c3RhY2svYXdzZWItZS12d2E0NGpoYnpwLWltbXV0YWJsZS1zdGFjay83ZGVlMjc5MC01ZDJiLTExZWQtYTlmNS0wYTE1NTRjYWQ4N2YnICAgICdjYTNjMGNhZi04Y2E4LTQ0NmYtYjAyZS0yZGI4NmM1YjAxNTYnICAgICdodHRwczovL2VsYXN0aWNiZWFuc3RhbGstaGVhbHRoLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tJyAgICAnJyAgICAnaHR0cHM6Ly9lbGFzdGljYmVhbnN0YWxrLXBsYXRmb3JtLWFzc2V0cy11cy1lYXN0LTEuczMuYW1hem9uYXdzLmNvbS9zdGFsa3MvZWJfdG9tY2F0ODVjb3JyZXR0bzExX2FtYXpvbl9saW51eF8yXzEuMC4xNDA5LjBfMjAyMjEwMjkwNTEwMjYnICAgICd1cy1lYXN0LTEnCiAgICBSRVNVTFQ9JD8KICAgIGlmIFtbICIkUkVTVUxUIiAtbmUgMCBdXTsgdGhlbiAKICAgICAgc2xlZXBfZGVsYXkgCiAgICBlbHNlIAogICAgICBleGl0IDAgIAogICAgZmkgCiAgZmkgCmRvbmUKCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09LS0g"
+            IamInstanceProfile: "aws-elasticbeanstalk-ec2-role"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Dev"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-vwa44jhbzp"
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Dev"
+            HibernationOptions: 
+                Configured: false
+            EnclaveOptions: 
+                Enabled: false
+
+    EC2Instance3:
+        Type: "AWS::EC2::Instance"
+        Properties:
+            ImageId: "ami-0eb2fc9afd1cac5df"
+            InstanceType: "t2.micro"
+            KeyName: "TestPair"
+            AvailabilityZone: !Sub "${AWS::Region}b"
+            Tenancy: "default"
+            SubnetId: "subnet-0d30e3425c1bc58ee"
+            EbsOptimized: false
+            SecurityGroupIds: 
+              - "sg-01e4cd091b2b55ce5"
+            SourceDestCheck: true
+            BlockDeviceMappings: 
+              - 
+                DeviceName: "/dev/xvda"
+                Ebs: 
+                    Encrypted: false
+                    VolumeSize: 8
+                    SnapshotId: "snap-0c1c6d56bf27e0cb6"
+                    VolumeType: "gp2"
+                    DeleteOnTermination: true
+            UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTIKU0xFRVBfVElNRV9NQVg9MzYwMAp3aGlsZSB0cnVlOyBkbyAKICBjdXJsIGh0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1wbGF0Zm9ybS1hc3NldHMtdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vc3RhbGtzL2ViX3RvbWNhdDg1Y29ycmV0dG8xMV9hbWF6b25fbGludXhfMl8xLjAuMTQ0MC4wXzIwMjIxMTI0MTQ1MzU1L2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgL2Jpbi9iYXNoIC90bXAvZWJib290c3RyYXAuc2ggICAgICdodHRwczovL2Nsb3VkZm9ybWF0aW9uLXdhaXRjb25kaXRpb24tdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vYXJuJTNBYXdzJTNBY2xvdWRmb3JtYXRpb24lM0F1cy1lYXN0LTElM0ExNjc1NDM5ODYyNDYlM0FzdGFjay9hd3NlYi1lLXEzbmh6ZHVncnAtaW1tdXRhYmxlLXN0YWNrLzk1OGQ5YjUwLTc3YTgtMTFlZC1iYWQwLTBlYTVmYmVmZjYzMy9BV1NFQkluc3RhbmNlTGF1bmNoV2FpdEhhbmRsZT9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1EYXRlPTIwMjIxMjA5VDEwMDIzM1omWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JlgtQW16LUV4cGlyZXM9ODYzOTkmWC1BbXotQ3JlZGVudGlhbD1BS0lBNkw3UTRPV1QyR1pZSEc3TiUyRjIwMjIxMjA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotU2lnbmF0dXJlPWFlZjEyNTdiYTE5NTY2MGM5YzBkYjk2NzA3MjBhMDNjZjVhZGRkMjkzN2UxMTM1Nzc5MDRhMGJjMTRjOWM1ZjcnICAgICdhcm46YXdzOmNsb3VkZm9ybWF0aW9uOnVzLWVhc3QtMToxNjc1NDM5ODYyNDY6c3RhY2svYXdzZWItZS1xM25oemR1Z3JwLWltbXV0YWJsZS1zdGFjay85NThkOWI1MC03N2E4LTExZWQtYmFkMC0wZWE1ZmJlZmY2MzMnICAgICdhZmI2YzMxNC05OTRmLTRjNmUtOWZmNS1hZjE4MTMxZGUxMmEnICAgICdodHRwczovL2VsYXN0aWNiZWFuc3RhbGstaGVhbHRoLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tJyAgICAnJyAgICAnaHR0cHM6Ly9lbGFzdGljYmVhbnN0YWxrLXBsYXRmb3JtLWFzc2V0cy11cy1lYXN0LTEuczMuYW1hem9uYXdzLmNvbS9zdGFsa3MvZWJfdG9tY2F0ODVjb3JyZXR0bzExX2FtYXpvbl9saW51eF8yXzEuMC4xNDQwLjBfMjAyMjExMjQxNDUzNTUnICAgICd1cy1lYXN0LTEnCiAgICBSRVNVTFQ9JD8KICAgIGlmIFtbICIkUkVTVUxUIiAtbmUgMCBdXTsgdGhlbiAKICAgICAgc2xlZXBfZGVsYXkgCiAgICBlbHNlIAogICAgICBleGl0IDAgIAogICAgZmkgCiAgZmkgCmRvbmUKCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09LS0g"
+            IamInstanceProfile: "aws-elasticbeanstalk-ec2-role"
+            Tags: 
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Prod"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-q3nhzdugrp"
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Prod"
+            HibernationOptions: 
+                Configured: false
+            EnclaveOptions: 
+                Enabled: false
+

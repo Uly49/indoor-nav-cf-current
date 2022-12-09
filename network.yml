@@ -1,0 +1,302 @@
+  Parameters:
+    IndoorNavVpcID:
+      Type: String
+      Description: VPC identifier
+
+    IndoorNavNaclID:
+      Type: String
+      Description: Network Access Control List identifier
+
+    DefaultSecurityGroupID:
+      Type: String
+      Description: Default security group
+
+  Resources:
+    EC2SubnetNaclAssociation:
+      Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+      Properties:
+        NetworkAclId: !Ref IndoorNavNaclID
+        SubnetId: !Ref EC2Subnet
+
+    EC2Subnet2NaclAssociation:
+      Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+      Properties:
+        NetworkAclId: !Ref IndoorNavNaclID
+        SubnetId: !Ref EC2Subnet2
+
+    EC2Subnet3NaclAssociation:
+      Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+      Properties:
+        NetworkAclId: !Ref IndoorNavNaclID
+        SubnetId: !Ref EC2Subnet3
+
+    # EC2Subnet4NaclAssociation:
+    #   Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    #   Properties:
+    #     NetworkAclId: !Ref IndoorNavNaclID
+    #     SubnetId: subnet-0146366af66d4cb58
+
+    # EC2Subnet5NaclAssociation:
+    #   Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    #   Properties:
+    #     NetworkAclId: !Ref IndoorNavNaclID
+    #     SubnetId: subnet-02a8ba85a2a263b0f
+
+    # EC2Subnet6NaclAssociation:
+    #   Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    #   Properties:
+    #     NetworkAclId: !Ref IndoorNavNaclID
+    #     SubnetId: !Ref EC2Subnet6
+
+    EC2Subnet:
+      Type: "AWS::EC2::Subnet"
+      Properties:
+        AvailabilityZone: !GetAtt EC2Subnet2.AvailabilityZone
+        CidrBlock: 172.31.64.0/20
+        VpcId: !Ref IndoorNavVpcID
+        MapPublicIpOnLaunch: false
+        Tags: 
+          - Key: "Network"
+            Value: "Private"
+          - Key: "Name"
+            Value: "in-PrivateSubnet1A"
+
+    EC2Subnet2:
+      Type: "AWS::EC2::Subnet"
+      Properties:
+        AvailabilityZone: !Sub "${AWS::Region}a"
+        CidrBlock: 172.31.96.0/20
+        VpcId: !Ref IndoorNavVpcID
+        MapPublicIpOnLaunch: true
+        Tags: 
+          - Key: "Network"
+            Value: "Public"
+          - Key: "Name"
+            Value: "in-PublicSubnet1"
+
+    EC2Subnet3:
+      Type: "AWS::EC2::Subnet"
+      Properties:
+        AvailabilityZone: !Sub "${AWS::Region}c"
+        CidrBlock: 172.31.80.0/20
+        VpcId: !Ref IndoorNavVpcID
+        MapPublicIpOnLaunch: false
+        Tags: 
+          - Key: "Network"
+            Value: "Private"
+          - Key: "Name"
+            Value: "in-PrivateSubnet3A"
+
+    # EC2Subnet4:
+    #   Type: "AWS::EC2::Subnet"
+    #   Properties:
+    #     AvailabilityZone: !Sub "${AWS::Region}c"
+    #     CidrBlock: 172.31.0.0/20
+    #     VpcId: !Ref IndoorNavVpcID
+    #     MapPublicIpOnLaunch: true
+    #     Tags: 
+    #       - Key: "Network"
+    #         Value: "Public"
+    #       - Key: "Name"
+    #         Value: "in-PublicSubnet3"
+
+    # EC2Subnet5:
+    #   Type: "AWS::EC2::Subnet"
+    #   Properties:
+    #     AvailabilityZone: !GetAtt EC2Subnet6.AvailabilityZone
+    #     CidrBlock: 172.31.32.0/20
+    #     VpcId: !Ref IndoorNavVpcID
+    #     MapPublicIpOnLaunch: false
+    #     Tags: 
+    #       - Key: "Network"
+    #         Value: "Private"
+    #       - Key: "Name"
+    #         Value: "in-PrivateSubnet2A"
+
+    # EC2Subnet6:
+    #   Type: "AWS::EC2::Subnet"
+    #   Properties:
+    #     AvailabilityZone: !Sub "${AWS::Region}b"
+    #     CidrBlock: 172.31.112.0/20
+    #     VpcId: !Ref IndoorNavVpcID
+    #     MapPublicIpOnLaunch: true
+    #     Tags: 
+    #       - Key: "Network"
+    #         Value: "Public"
+    #       - Key: "Name"
+    #         Value: "in-PublicSubnet2"
+
+    # EC2NetworkInterface:
+    #   Type: "AWS::EC2::NetworkInterface"
+    #   Properties:
+    #     Description: "VPC Endpoint Interface vpce-04dd9e4d23977695f"
+    #     PrivateIpAddress: "172.31.44.22"
+    #     SubnetId: subnet-02a8ba85a2a263b0f
+    #     SourceDestCheck: true
+    #     GroupSet: 
+    #       - !Ref DefaultSecurityGroupID
+
+    # EC2NetworkInterface2:
+    #   Type: "AWS::EC2::NetworkInterface"
+    #   Properties:
+    #     Description: "VPC Endpoint Interface vpce-06f4e89967f8904d1"
+    #     PrivateIpAddress: "172.31.36.52"
+    #     SubnetId: subnet-02a8ba85a2a263b0f
+    #     SourceDestCheck: true
+    #     GroupSet: 
+    #       - !Ref DefaultSecurityGroupID
+
+    # EC2NetworkInterface3:
+    #   Type: "AWS::EC2::NetworkInterface"
+    #   Properties:
+    #     Description: "VPC Endpoint Interface vpce-02d8ab10cbba34d33"
+    #     PrivateIpAddress: "172.31.40.126"
+    #     SubnetId: subnet-02a8ba85a2a263b0f
+    #     SourceDestCheck: true
+    #     GroupSet: 
+    #       - !Ref DefaultSecurityGroupID
+
+    # EC2NetworkInterface4:
+    #   Type: "AWS::EC2::NetworkInterface"
+    #   Properties:
+    #     Description: "VPC Endpoint Interface vpce-02b5fa6573f83dac9"
+    #     PrivateIpAddress: "172.31.36.207"
+    #     SubnetId: subnet-02a8ba85a2a263b0f
+    #     SourceDestCheck: true
+    #     GroupSet: 
+    #       - !Ref DefaultSecurityGroupID
+
+    # EC2NetworkInterface5:
+    #   Type: "AWS::EC2::NetworkInterface"
+    #   Properties:
+    #     Description: "VPC Endpoint Interface vpce-0fb7034ba6c805a19"
+    #     PrivateIpAddress: "172.31.33.139"
+    #     SubnetId: subnet-02a8ba85a2a263b0f
+    #     SourceDestCheck: true
+    #     GroupSet: 
+    #       - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface6:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-02d8ab10cbba34d33"
+        PrivateIpAddress: "172.31.88.94"
+        SubnetId: !Ref EC2Subnet3
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface7:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-0fb7034ba6c805a19"
+        PrivateIpAddress: "172.31.94.235"
+        SubnetId: !Ref EC2Subnet3
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface8:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-04dd9e4d23977695f"
+        PrivateIpAddress: "172.31.88.39"
+        SubnetId: !Ref EC2Subnet3
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface9:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-06f4e89967f8904d1"
+        PrivateIpAddress: "172.31.93.37"
+        SubnetId: !Ref EC2Subnet3
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface10:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-02b5fa6573f83dac9"
+        PrivateIpAddress: "172.31.80.68"
+        SubnetId: !Ref EC2Subnet3
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface11:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-04dd9e4d23977695f"
+        PrivateIpAddress: "172.31.74.217"
+        SubnetId: !Ref EC2Subnet
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface12:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-0fb7034ba6c805a19"
+        PrivateIpAddress: "172.31.67.186"
+        SubnetId: !Ref EC2Subnet
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface13:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-02b5fa6573f83dac9"
+        PrivateIpAddress: "172.31.70.118"
+        SubnetId: !Ref EC2Subnet
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface14:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-02d8ab10cbba34d33"
+        PrivateIpAddress: "172.31.64.27"
+        SubnetId: !Ref EC2Subnet
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+    EC2NetworkInterface15:
+      Type: "AWS::EC2::NetworkInterface"
+      Properties:
+        Description: "VPC Endpoint Interface vpce-06f4e89967f8904d1"
+        PrivateIpAddress: "172.31.78.169"
+        SubnetId: !Ref EC2Subnet
+        SourceDestCheck: true
+        GroupSet: 
+          - !Ref DefaultSecurityGroupID
+
+  Outputs:
+    EC2SubnetID:
+      Value: !Ref EC2Subnet
+      Description: Subnet identifier
+
+    EC2Subnet2ID:
+      Value: !Ref EC2Subnet2
+      Description: Subnet identifier
+
+    EC2Subnet3ID:
+      Value: !Ref EC2Subnet3
+      Description: Subnet identifier
+
+    # EC2Subnet4ID:
+    #   Value: !Ref EC2Subnet4
+    #   Description: Subnet identifier
+
+    # EC2Subnet5ID:
+    #   Value: !Ref EC2Subnet5
+    #   Description: Subnet identifier
+
+    # EC2Subnet6ID:
+    #   Value: !Ref EC2Subnet6
+    #   Description: Subnet identifier

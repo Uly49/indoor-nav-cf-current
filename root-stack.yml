@@ -1,0 +1,184 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+  Template for Indoor Navigation stack
+
+#Metadata: 
+
+#Parameters: 
+
+#Mappings: 
+
+#Conditions: 
+
+Resources: 
+  VPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 172.31.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-VPC
+
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-InternetGateway
+
+  VPCGatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+  Route:
+    Type: AWS::EC2::Route
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway   
+
+
+  # IndoorNavEC2PostGisInstance:
+  #   Type: "AWS::EC2::Instance"
+  #   Properties:
+  #       ImageId: "ami-045e6bfb60639eab0"
+  #       InstanceType: "t2.micro"
+  #       KeyName: "TestPair"
+  #       # AvailabilityZone: !GetAtt EC2Instance2.AvailabilityZone
+  #       Tenancy: "default"
+  #       SubnetId: !GetAtt NestedStackNetwork.Outputs.EC2SubnetID
+  #       EbsOptimized: false
+  #       SecurityGroupIds: 
+  #         - NestedStackSecurity.Outputs.IndoorNavPostgisEnvProdSecurityGroupID
+  #       SourceDestCheck: true
+  #       BlockDeviceMappings: 
+  #         - 
+  #           DeviceName: "/dev/xvda"
+  #           Ebs: 
+  #               Encrypted: false
+  #               VolumeSize: 8
+  #               VolumeType: "gp2"
+  #               DeleteOnTermination: true
+  #       # UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTEwClNMRUVQX1RJTUVfTUFYPTM2MDAKd2hpbGUgdHJ1ZTsgZG8gCiAgY3VybCBodHRwczovL2VsYXN0aWNiZWFuc3RhbGstcGxhdGZvcm0tYXNzZXRzLXVzLWVhc3QtMS5zMy5hbWF6b25hd3MuY29tL3N0YWxrcy9lYl9ub2RlanMxNl9hbWF6b25fbGludXhfMl8xLjAuMTU4Ni4wXzIwMjIwNjE2MTQyNTUxL2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgU0xFRVBfVElNRT0yCiAgICAvYmluL2Jhc2ggL3RtcC9lYmJvb3RzdHJhcC5zaCAgICAgJ2h0dHBzOi8vY2xvdWRmb3JtYXRpb24td2FpdGNvbmRpdGlvbi11cy1lYXN0LTEuczMuYW1hem9uYXdzLmNvbS9hcm4lM0Fhd3MlM0FjbG91ZGZvcm1hdGlvbiUzQXVzLWVhc3QtMSUzQTE2NzU0Mzk4NjI0NiUzQXN0YWNrL2F3c2ViLWUtM3h1cmo1dmFwZC1pbW11dGFibGUtc3RhY2svZGE0OWNkZDAtZjQwMC0xMWVjLTk0ZTMtMGVkZTM0NTE3ZjI3L0FXU0VCSW5zdGFuY2VMYXVuY2hXYWl0SGFuZGxlP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LURhdGU9MjAyMjA2MjRUMjEwMTUxWiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmWC1BbXotRXhwaXJlcz04NjM5OSZYLUFtei1DcmVkZW50aWFsPUFLSUE2TDdRNE9XVDJHWllIRzdOJTJGMjAyMjA2MjQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1TaWduYXR1cmU9ODU0YzFjNjBjMjQ2N2UxYWI3MzQ4NTIyOWZhN2FjZWVjNjU0MzdkNWUyODJjYTJjZjNkYTFiMzE2NmFlMTBiMicgICAgJ2Fybjphd3M6Y2xvdWRmb3JtYXRpb246dXMtZWFzdC0xOjE2NzU0Mzk4NjI0NjpzdGFjay9hd3NlYi1lLTN4dXJqNXZhcGQtaW1tdXRhYmxlLXN0YWNrL2RhNDljZGQwLWY0MDAtMTFlYy05NGUzLTBlZGUzNDUxN2YyNycgICAgJ2EwMGQ2YTgzLTQ1ZDItNDgwYS1iZWNiLTIxNGE3M2QxNjAzMicgICAgJ2h0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1oZWFsdGgudXMtZWFzdC0xLmFtYXpvbmF3cy5jb20nICAgICcnICAgICdodHRwczovL2VsYXN0aWNiZWFuc3RhbGstcGxhdGZvcm0tYXNzZXRzLXVzLWVhc3QtMS5zMy5hbWF6b25hd3MuY29tL3N0YWxrcy9lYl9ub2RlanMxNl9hbWF6b25fbGludXhfMl8xLjAuMTU4Ni4wXzIwMjIwNjE2MTQyNTUxJyAgICAndXMtZWFzdC0xJwogICAgUkVTVUxUPSQ/CiAgICBpZiBbWyAiJFJFU1VMVCIgLW5lIDAgXV07IHRoZW4gCiAgICAgIHNsZWVwX2RlbGF5IAogICAgZWxzZSAKICAgICAgZXhpdCAwICAKICAgIGZpIAogIGZpIApkb25lCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PS0tIA=="
+  #       # IamInstanceProfile: "aws-elasticbeanstalk-ec2-role"
+  #       Tags: 
+  #         - 
+  #           Key: "elasticbeanstalk:environment-name"
+  #           Value: "Postgisapi-env-prod"
+  #         - 
+  #           Key: "Name"
+  #           Value: "Postgisapi-env-prod"
+  #         - 
+  #           Key: "elasticbeanstalk:environment-id"
+  #           Value: "e-3xurj5vapd"
+  #         - 
+  #           Key: Name
+  #           Value: Indoor-Nav-EC2-Post-GIS-Instance
+  #       HibernationOptions: 
+  #           Configured: false
+  #       EnclaveOptions: 
+  #           Enabled: false
+
+
+
+  IndoorNavEC2PostGisInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: "ami-0beaa649c482330f7"
+      InstanceType: t2.micro
+      KeyName: IndoorNavKey
+      SubnetId: !GetAtt NestedStackNetwork.Outputs.EC2SubnetID
+      SecurityGroupIds:
+        - !GetAtt NestedStackSecurity.Outputs.IndoorNavPostgisEnvProdSecurityGroupID
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+            VolumeType: gp2
+            DeleteOnTermination: true
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-EC2-Post-GIS-Instance
+          
+  IndoorNavEC2GeoServerProd:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: "ami-0beaa649c482330f7"
+      InstanceType: t2.micro
+      KeyName: IndoorNavKey
+      SubnetId: !GetAtt NestedStackNetwork.Outputs.EC2Subnet3ID
+      SecurityGroupIds:
+        - !GetAtt NestedStackSecurity.Outputs.IndoorNavGeoserverEnvProdSecurityGroupID
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+            VolumeType: gp2
+            DeleteOnTermination: true
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-EC2-Geo-Server-Prod
+
+  IndoorNavEC2GeoServerDev:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: "ami-0beaa649c482330f7"
+      InstanceType: t2.micro
+      KeyName: IndoorNavKey
+      SubnetId: !GetAtt NestedStackNetwork.Outputs.EC2Subnet2ID
+      SecurityGroupIds:
+        - !GetAtt NestedStackSecurity.Outputs.IndoorNavGeoserverEnvDevSecurityGroupID
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+            VolumeType: gp2
+            DeleteOnTermination: true
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-EC2-Geo-Server-Dev
+
+  EIP:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      InstanceId: !Ref IndoorNavEC2GeoServerDev  
+
+  NestedStackSecurity:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties: 
+      Parameters:
+        IndoorNavVpcID: !Ref VPC
+      TemplateURL: https://cf-templates-1u29eskzgdjiq-us-east-2.s3.us-east-2.amazonaws.com/indoor-nav/security.yml
+      TimeoutInMinutes: 60
+
+  NestedStackNetwork:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties: 
+      Parameters:
+        IndoorNavVpcID: !Ref VPC
+        IndoorNavNaclID: !GetAtt NestedStackNetworkAcl.Outputs.IndoorNavNetworkAclID
+        DefaultSecurityGroupID: !GetAtt NestedStackSecurity.Outputs.DefaultSecurityGroupID
+      TemplateURL: https://cf-templates-1u29eskzgdjiq-us-east-2.s3.us-east-2.amazonaws.com/indoor-nav/network.yml
+      TimeoutInMinutes: 60
+
+  NestedStackNetworkAcl:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties: 
+      Parameters:
+        IndoorNavVpcID: !Ref VPC
+      TemplateURL: https://cf-templates-1u29eskzgdjiq-us-east-2.s3.us-east-2.amazonaws.com/indoor-nav/nacl.yml
+      TimeoutInMinutes: 60
+
+
+# Outputs:

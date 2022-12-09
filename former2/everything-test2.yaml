@@ -1,0 +1,3233 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Metadata:
+    Generator: "former2"
+Description: ""
+Resources:
+    ElasticBeanstalkApplication:
+        Type: "AWS::ElasticBeanstalk::Application"
+        Properties:
+            ApplicationName: "Geoserver"
+
+    ElasticBeanstalkApplication2:
+        Type: "AWS::ElasticBeanstalk::Application"
+        Properties:
+            ApplicationName: "Postgis-Api"
+            Description: "This api wraps read access to extra calls to the postgis database"
+
+    ElasticBeanstalkEnvironment:
+        Type: "AWS::ElasticBeanstalk::Environment"
+        Properties:
+            EnvironmentName: "Geoserver-env-Dev"
+            ApplicationName: "Geoserver"
+            VersionLabel: "geoserver-source-5"
+            SolutionStackName: "64bit Amazon Linux 2 v4.3.1 running Tomcat 8.5 Corretto 11"
+            PlatformArn: !Sub "arn:aws:elasticbeanstalk:${AWS::Region}::platform/Tomcat 8.5 with Corretto 11 running on 64bit Amazon Linux 2/4.3.1"
+            Tier: 
+                Name: "WebServer"
+                Type: "Standard"
+                Version: "1.0"
+            CNAMEPrefix: "Geoserver-env-Dev"
+            Tags: 
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Dev"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-vwa44jhbzp"
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Dev"
+
+    ElasticBeanstalkEnvironment2:
+        Type: "AWS::ElasticBeanstalk::Environment"
+        Properties:
+            EnvironmentName: "Geoserver-env-Prod"
+            ApplicationName: "Geoserver"
+            VersionLabel: "geoserver-source-1"
+            SolutionStackName: "64bit Amazon Linux 2 v4.3.2 running Tomcat 8.5 Corretto 11"
+            PlatformArn: !Sub "arn:aws:elasticbeanstalk:${AWS::Region}::platform/Tomcat 8.5 with Corretto 11 running on 64bit Amazon Linux 2/4.3.2"
+            Tier: 
+                Name: "WebServer"
+                Type: "Standard"
+                Version: "1.0"
+            CNAMEPrefix: "indoornav-geoserver"
+            Tags: 
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Prod"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-q3nhzdugrp"
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Prod"
+
+    ElasticBeanstalkEnvironment3:
+        Type: "AWS::ElasticBeanstalk::Environment"
+        Properties:
+            EnvironmentName: "Postgisapi-env-prod"
+            ApplicationName: "Postgis-Api"
+            VersionLabel: "postgis-api-source-1"
+            SolutionStackName: "64bit Amazon Linux 2 v5.5.4 running Node.js 16"
+            PlatformArn: !Sub "arn:aws:elasticbeanstalk:${AWS::Region}::platform/Node.js 16 running on 64bit Amazon Linux 2/5.5.4"
+            Tier: 
+                Name: "WebServer"
+                Type: "Standard"
+                Version: "1.0"
+            CNAMEPrefix: "Postgisapi-env-prod"
+            Tags: 
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Postgisapi-env-prod"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-3xurj5vapd"
+              - 
+                Key: "Name"
+                Value: "Postgisapi-env-prod"
+
+    EC2SecurityGroup:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: "VPC Security Group"
+            GroupName: "awseb-e-vwa44jhbzp-stack-AWSEBSecurityGroup-X0LR1M4V6T5G"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Dev"
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Dev"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-vwa44jhbzp"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            SecurityGroupIngress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 80
+                IpProtocol: "tcp"
+                ToPort: 80
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 22
+                IpProtocol: "tcp"
+                ToPort: 22
+            SecurityGroupEgress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                IpProtocol: "-1"
+
+    EC2SecurityGroup2:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: "VPC Security Group"
+            GroupName: "awseb-e-q3nhzdugrp-stack-AWSEBSecurityGroup-JPRVM1A9JRTV"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Prod"
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Prod"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-q3nhzdugrp"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            SecurityGroupIngress: 
+              - 
+                SourceSecurityGroupId: !Ref EC2SecurityGroup5
+                SourceSecurityGroupOwnerId: !Ref AWS::AccountId
+                FromPort: 80
+                IpProtocol: "tcp"
+                ToPort: 80
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 22
+                IpProtocol: "tcp"
+                ToPort: 22
+            SecurityGroupEgress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                IpProtocol: "-1"
+
+    EC2SecurityGroup3:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: "VPC Security Group"
+            GroupName: "awseb-e-3xurj5vapd-stack-AWSEBSecurityGroup-1U02YI42KPVSS"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Postgisapi-env-prod"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-3xurj5vapd"
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Postgisapi-env-prod"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            SecurityGroupIngress: 
+              - 
+                SourceSecurityGroupId: !Ref EC2SecurityGroup5
+                SourceSecurityGroupOwnerId: !Ref AWS::AccountId
+                FromPort: 80
+                IpProtocol: "tcp"
+                ToPort: 80
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 22
+                IpProtocol: "tcp"
+                ToPort: 22
+            SecurityGroupEgress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                IpProtocol: "-1"
+
+    IAMInstanceProfile:
+        Type: "AWS::IAM::InstanceProfile"
+        Properties:
+            Path: "/"
+            InstanceProfileName: !Ref IAMRole2
+            Roles: 
+              - !Ref IAMRole2
+
+    EC2Subnet:
+        Type: "AWS::EC2::Subnet"
+        Properties:
+            AvailabilityZone: !GetAtt EC2Subnet3.AvailabilityZone
+            CidrBlock: "172.31.96.0/20"
+            VpcId: !GetAtt EC2Subnet2.VpcId
+            MapPublicIpOnLaunch: true
+            Tags: 
+              - 
+                Key: "Network"
+                Value: "Public"
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PublicSubnet1"
+
+    EC2Subnet2:
+        Type: "AWS::EC2::Subnet"
+        Properties:
+            AvailabilityZone: !GetAtt EC2Instance3.AvailabilityZone
+            CidrBlock: "172.31.32.0/20"
+            VpcId: !GetAtt EC2Subnet3.VpcId
+            MapPublicIpOnLaunch: false
+            Tags: 
+              - 
+                Key: "Network"
+                Value: "Private"
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PrivateSubnet2A"
+
+    EC2Subnet3:
+        Type: "AWS::EC2::Subnet"
+        Properties:
+            AvailabilityZone: !GetAtt EC2Instance.AvailabilityZone
+            CidrBlock: "172.31.64.0/20"
+            VpcId: !GetAtt EC2Subnet4.VpcId
+            MapPublicIpOnLaunch: false
+            Tags: 
+              - 
+                Key: "Network"
+                Value: "Private"
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PrivateSubnet1A"
+
+    EC2Instance:
+        Type: "AWS::EC2::Instance"
+        Properties:
+            ImageId: "ami-045e6bfb60639eab0"
+            InstanceType: "t2.micro"
+            KeyName: "TestPair"
+            AvailabilityZone: !GetAtt EC2Instance2.AvailabilityZone
+            Tenancy: "default"
+            SubnetId: "subnet-00a34302a8d6bb1f1"
+            EbsOptimized: false
+            SecurityGroupIds: 
+              - "sg-017d05d0dfef0e8d9"
+            SourceDestCheck: true
+            BlockDeviceMappings: 
+              - 
+                DeviceName: "/dev/xvda"
+                Ebs: 
+                    Encrypted: false
+                    VolumeSize: 8
+                    SnapshotId: "snap-02ea0a6e716bff347"
+                    VolumeType: "gp2"
+                    DeleteOnTermination: true
+            UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTEwClNMRUVQX1RJTUVfTUFYPTM2MDAKd2hpbGUgdHJ1ZTsgZG8gCiAgY3VybCBodHRwczovL2VsYXN0aWNiZWFuc3RhbGstcGxhdGZvcm0tYXNzZXRzLXVzLWVhc3QtMS5zMy5hbWF6b25hd3MuY29tL3N0YWxrcy9lYl9ub2RlanMxNl9hbWF6b25fbGludXhfMl8xLjAuMTU4Ni4wXzIwMjIwNjE2MTQyNTUxL2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgU0xFRVBfVElNRT0yCiAgICAvYmluL2Jhc2ggL3RtcC9lYmJvb3RzdHJhcC5zaCAgICAgJ2h0dHBzOi8vY2xvdWRmb3JtYXRpb24td2FpdGNvbmRpdGlvbi11cy1lYXN0LTEuczMuYW1hem9uYXdzLmNvbS9hcm4lM0Fhd3MlM0FjbG91ZGZvcm1hdGlvbiUzQXVzLWVhc3QtMSUzQTE2NzU0Mzk4NjI0NiUzQXN0YWNrL2F3c2ViLWUtM3h1cmo1dmFwZC1pbW11dGFibGUtc3RhY2svZGE0OWNkZDAtZjQwMC0xMWVjLTk0ZTMtMGVkZTM0NTE3ZjI3L0FXU0VCSW5zdGFuY2VMYXVuY2hXYWl0SGFuZGxlP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LURhdGU9MjAyMjA2MjRUMjEwMTUxWiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmWC1BbXotRXhwaXJlcz04NjM5OSZYLUFtei1DcmVkZW50aWFsPUFLSUE2TDdRNE9XVDJHWllIRzdOJTJGMjAyMjA2MjQlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1TaWduYXR1cmU9ODU0YzFjNjBjMjQ2N2UxYWI3MzQ4NTIyOWZhN2FjZWVjNjU0MzdkNWUyODJjYTJjZjNkYTFiMzE2NmFlMTBiMicgICAgJ2Fybjphd3M6Y2xvdWRmb3JtYXRpb246dXMtZWFzdC0xOjE2NzU0Mzk4NjI0NjpzdGFjay9hd3NlYi1lLTN4dXJqNXZhcGQtaW1tdXRhYmxlLXN0YWNrL2RhNDljZGQwLWY0MDAtMTFlYy05NGUzLTBlZGUzNDUxN2YyNycgICAgJ2EwMGQ2YTgzLTQ1ZDItNDgwYS1iZWNiLTIxNGE3M2QxNjAzMicgICAgJ2h0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1oZWFsdGgudXMtZWFzdC0xLmFtYXpvbmF3cy5jb20nICAgICcnICAgICdodHRwczovL2VsYXN0aWNiZWFuc3RhbGstcGxhdGZvcm0tYXNzZXRzLXVzLWVhc3QtMS5zMy5hbWF6b25hd3MuY29tL3N0YWxrcy9lYl9ub2RlanMxNl9hbWF6b25fbGludXhfMl8xLjAuMTU4Ni4wXzIwMjIwNjE2MTQyNTUxJyAgICAndXMtZWFzdC0xJwogICAgUkVTVUxUPSQ/CiAgICBpZiBbWyAiJFJFU1VMVCIgLW5lIDAgXV07IHRoZW4gCiAgICAgIHNsZWVwX2RlbGF5IAogICAgZWxzZSAKICAgICAgZXhpdCAwICAKICAgIGZpIAogIGZpIApkb25lCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PS0tIA=="
+            IamInstanceProfile: !Ref IAMRole2
+            Tags: 
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Postgisapi-env-prod"
+              - 
+                Key: "Name"
+                Value: "Postgisapi-env-prod"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-3xurj5vapd"
+            HibernationOptions: 
+                Configured: false
+            EnclaveOptions: 
+                Enabled: false
+
+    EC2Instance2:
+        Type: "AWS::EC2::Instance"
+        Properties:
+            ImageId: "ami-0d1b64d60913b0b4c"
+            InstanceType: "t2.micro"
+            KeyName: "TestPair"
+            AvailabilityZone: !Sub "${AWS::Region}a"
+            Tenancy: "default"
+            SubnetId: "subnet-08d3135548ae2f5c5"
+            EbsOptimized: false
+            SecurityGroupIds: 
+              - "sg-0027f1316ede20614"
+            SourceDestCheck: true
+            BlockDeviceMappings: 
+              - 
+                DeviceName: "/dev/xvda"
+                Ebs: 
+                    Encrypted: false
+                    VolumeSize: 8
+                    SnapshotId: "snap-0520895bc4b74ac31"
+                    VolumeType: "gp2"
+                    DeleteOnTermination: true
+            UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTIKU0xFRVBfVElNRV9NQVg9MzYwMAp3aGlsZSB0cnVlOyBkbyAKICBjdXJsIGh0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1wbGF0Zm9ybS1hc3NldHMtdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vc3RhbGtzL2ViX3RvbWNhdDg1Y29ycmV0dG8xMV9hbWF6b25fbGludXhfMl8xLjAuMTQwOS4wXzIwMjIxMDI5MDUxMDI2L2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgL2Jpbi9iYXNoIC90bXAvZWJib290c3RyYXAuc2ggICAgICdodHRwczovL2Nsb3VkZm9ybWF0aW9uLXdhaXRjb25kaXRpb24tdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vYXJuJTNBYXdzJTNBY2xvdWRmb3JtYXRpb24lM0F1cy1lYXN0LTElM0ExNjc1NDM5ODYyNDYlM0FzdGFjay9hd3NlYi1lLXZ3YTQ0amhienAtaW1tdXRhYmxlLXN0YWNrLzdkZWUyNzkwLTVkMmItMTFlZC1hOWY1LTBhMTU1NGNhZDg3Zi9BV1NFQkluc3RhbmNlTGF1bmNoV2FpdEhhbmRsZT9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1EYXRlPTIwMjIxMTA1VDE3MDEzN1omWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JlgtQW16LUV4cGlyZXM9ODYzOTkmWC1BbXotQ3JlZGVudGlhbD1BS0lBNkw3UTRPV1QyR1pZSEc3TiUyRjIwMjIxMTA1JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotU2lnbmF0dXJlPWNjOTFkODY1YTM4MjFkYjlmNTdlN2E2MDcwODVmZWJlNTExNjgyMTE3YTIyMTVlZTEzZDRiM2JkMGQ2ZTViNmYnICAgICdhcm46YXdzOmNsb3VkZm9ybWF0aW9uOnVzLWVhc3QtMToxNjc1NDM5ODYyNDY6c3RhY2svYXdzZWItZS12d2E0NGpoYnpwLWltbXV0YWJsZS1zdGFjay83ZGVlMjc5MC01ZDJiLTExZWQtYTlmNS0wYTE1NTRjYWQ4N2YnICAgICdjYTNjMGNhZi04Y2E4LTQ0NmYtYjAyZS0yZGI4NmM1YjAxNTYnICAgICdodHRwczovL2VsYXN0aWNiZWFuc3RhbGstaGVhbHRoLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tJyAgICAnJyAgICAnaHR0cHM6Ly9lbGFzdGljYmVhbnN0YWxrLXBsYXRmb3JtLWFzc2V0cy11cy1lYXN0LTEuczMuYW1hem9uYXdzLmNvbS9zdGFsa3MvZWJfdG9tY2F0ODVjb3JyZXR0bzExX2FtYXpvbl9saW51eF8yXzEuMC4xNDA5LjBfMjAyMjEwMjkwNTEwMjYnICAgICd1cy1lYXN0LTEnCiAgICBSRVNVTFQ9JD8KICAgIGlmIFtbICIkUkVTVUxUIiAtbmUgMCBdXTsgdGhlbiAKICAgICAgc2xlZXBfZGVsYXkgCiAgICBlbHNlIAogICAgICBleGl0IDAgIAogICAgZmkgCiAgZmkgCmRvbmUKCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09LS0g"
+            IamInstanceProfile: !Ref IAMRole2
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Dev"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-vwa44jhbzp"
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Dev"
+            HibernationOptions: 
+                Configured: false
+            EnclaveOptions: 
+                Enabled: false
+
+    EC2Instance3:
+        Type: "AWS::EC2::Instance"
+        Properties:
+            ImageId: "ami-0eb2fc9afd1cac5df"
+            InstanceType: "t2.micro"
+            KeyName: "TestPair"
+            AvailabilityZone: !GetAtt EC2Subnet6.AvailabilityZone
+            Tenancy: "default"
+            SubnetId: "subnet-0d30e3425c1bc58ee"
+            EbsOptimized: false
+            SecurityGroupIds: 
+              - "sg-01e4cd091b2b55ce5"
+            SourceDestCheck: true
+            BlockDeviceMappings: 
+              - 
+                DeviceName: "/dev/xvda"
+                Ebs: 
+                    Encrypted: false
+                    VolumeSize: 8
+                    SnapshotId: "snap-0c1c6d56bf27e0cb6"
+                    VolumeType: "gp2"
+                    DeleteOnTermination: true
+            UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTIKU0xFRVBfVElNRV9NQVg9MzYwMAp3aGlsZSB0cnVlOyBkbyAKICBjdXJsIGh0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1wbGF0Zm9ybS1hc3NldHMtdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vc3RhbGtzL2ViX3RvbWNhdDg1Y29ycmV0dG8xMV9hbWF6b25fbGludXhfMl8xLjAuMTQ0MC4wXzIwMjIxMTI0MTQ1MzU1L2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgL2Jpbi9iYXNoIC90bXAvZWJib290c3RyYXAuc2ggICAgICdodHRwczovL2Nsb3VkZm9ybWF0aW9uLXdhaXRjb25kaXRpb24tdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vYXJuJTNBYXdzJTNBY2xvdWRmb3JtYXRpb24lM0F1cy1lYXN0LTElM0ExNjc1NDM5ODYyNDYlM0FzdGFjay9hd3NlYi1lLXEzbmh6ZHVncnAtaW1tdXRhYmxlLXN0YWNrLzk1OGQ5YjUwLTc3YTgtMTFlZC1iYWQwLTBlYTVmYmVmZjYzMy9BV1NFQkluc3RhbmNlTGF1bmNoV2FpdEhhbmRsZT9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1EYXRlPTIwMjIxMjA5VDEwMDIzM1omWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JlgtQW16LUV4cGlyZXM9ODYzOTkmWC1BbXotQ3JlZGVudGlhbD1BS0lBNkw3UTRPV1QyR1pZSEc3TiUyRjIwMjIxMjA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotU2lnbmF0dXJlPWFlZjEyNTdiYTE5NTY2MGM5YzBkYjk2NzA3MjBhMDNjZjVhZGRkMjkzN2UxMTM1Nzc5MDRhMGJjMTRjOWM1ZjcnICAgICdhcm46YXdzOmNsb3VkZm9ybWF0aW9uOnVzLWVhc3QtMToxNjc1NDM5ODYyNDY6c3RhY2svYXdzZWItZS1xM25oemR1Z3JwLWltbXV0YWJsZS1zdGFjay85NThkOWI1MC03N2E4LTExZWQtYmFkMC0wZWE1ZmJlZmY2MzMnICAgICdhZmI2YzMxNC05OTRmLTRjNmUtOWZmNS1hZjE4MTMxZGUxMmEnICAgICdodHRwczovL2VsYXN0aWNiZWFuc3RhbGstaGVhbHRoLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tJyAgICAnJyAgICAnaHR0cHM6Ly9lbGFzdGljYmVhbnN0YWxrLXBsYXRmb3JtLWFzc2V0cy11cy1lYXN0LTEuczMuYW1hem9uYXdzLmNvbS9zdGFsa3MvZWJfdG9tY2F0ODVjb3JyZXR0bzExX2FtYXpvbl9saW51eF8yXzEuMC4xNDQwLjBfMjAyMjExMjQxNDUzNTUnICAgICd1cy1lYXN0LTEnCiAgICBSRVNVTFQ9JD8KICAgIGlmIFtbICIkUkVTVUxUIiAtbmUgMCBdXTsgdGhlbiAKICAgICAgc2xlZXBfZGVsYXkgCiAgICBlbHNlIAogICAgICBleGl0IDAgIAogICAgZmkgCiAgZmkgCmRvbmUKCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09LS0g"
+            IamInstanceProfile: !Ref IAMRole2
+            Tags: 
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Prod"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-q3nhzdugrp"
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Prod"
+            HibernationOptions: 
+                Configured: false
+            EnclaveOptions: 
+                Enabled: false
+
+    EC2EIP:
+        Type: "AWS::EC2::EIP"
+        Properties:
+            Domain: "vpc"
+            InstanceId: !Ref EC2Instance2
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Dev"
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Dev"
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-vwa44jhbzp"
+
+    EC2EIPAssociation:
+        Type: "AWS::EC2::EIPAssociation"
+        Properties:
+            AllocationId: !GetAtt EC2EIP.AllocationId
+            InstanceId: !Ref EC2Instance2
+            NetworkInterfaceId: "eni-0359c626bcc29f45c"
+            PrivateIpAddress: !GetAtt EC2Instance2.PrivateIp
+
+    EC2VolumeAttachment:
+        Type: "AWS::EC2::VolumeAttachment"
+        Properties:
+            VolumeId: !Ref EC2Volume
+            InstanceId: !Ref EC2Instance3
+            Device: "/dev/xvda"
+
+    EC2VolumeAttachment2:
+        Type: "AWS::EC2::VolumeAttachment"
+        Properties:
+            VolumeId: !Ref EC2Volume2
+            InstanceId: !Ref EC2Instance
+            Device: "/dev/xvda"
+
+    EC2VolumeAttachment3:
+        Type: "AWS::EC2::VolumeAttachment"
+        Properties:
+            VolumeId: !Ref EC2Volume3
+            InstanceId: !Ref EC2Instance2
+            Device: "/dev/xvda"
+
+    EC2NetworkInterfaceAttachment:
+        Type: "AWS::EC2::NetworkInterfaceAttachment"
+        Properties:
+            NetworkInterfaceId: "eni-0359c626bcc29f45c"
+            DeviceIndex: 0
+            InstanceId: !Ref EC2Instance2
+            DeleteOnTermination: true
+
+    EC2NetworkInterfaceAttachment2:
+        Type: "AWS::EC2::NetworkInterfaceAttachment"
+        Properties:
+            NetworkInterfaceId: "eni-05ffbe2d5df759d38"
+            DeviceIndex: 0
+            InstanceId: !Ref EC2Instance
+            DeleteOnTermination: true
+
+    EC2NetworkInterfaceAttachment3:
+        Type: "AWS::EC2::NetworkInterfaceAttachment"
+        Properties:
+            NetworkInterfaceId: "eni-03aee82fa19e7ca69"
+            DeviceIndex: 0
+            InstanceId: !Ref EC2Instance3
+            DeleteOnTermination: true
+
+    DocDBDBSubnetGroup:
+        Type: "AWS::DocDB::DBSubnetGroup"
+        Properties:
+            DBSubnetGroupName: !Sub "default-${EC2Subnet.VpcId}"
+            DBSubnetGroupDescription: "Created from the RDS Management Console"
+            SubnetIds: 
+              - !Ref EC2Subnet6
+              - !Ref EC2Subnet2
+              - !Ref EC2Subnet5
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet
+              - !Ref EC2Subnet3
+
+    EC2VPCDHCPOptionsAssociation:
+        Type: "AWS::EC2::VPCDHCPOptionsAssociation"
+        Properties:
+            DhcpOptionsId: "dopt-02c04b48a228f5e40"
+            VpcId: !GetAtt EC2Subnet.VpcId
+
+    EC2FlowLog:
+        Type: "AWS::EC2::FlowLog"
+        Properties:
+            DeliverLogsPermissionArn: !GetAtt IAMRole.Arn
+            LogGroupName: "StackSet-AWSControlTowerBP-VPC-ACCOUNT-FACTORY-V1-e2f573f8-a8c8-4676-8bdf-45512b07ce81-VPCFlowLogsLogGroup-Q5i4XiPIEMwK"
+            ResourceId: !GetAtt EC2Subnet.VpcId
+            TrafficType: "ALL"
+            LogDestinationType: "cloud-watch-logs"
+            ResourceType: "VPC"
+            LogFormat: "${version} ${account-id} ${interface-id} ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} ${packets} ${bytes} ${start} ${end} ${action} ${log-status}"
+            MaxAggregationInterval: 600
+
+    EC2VPCGatewayAttachment:
+        Type: "AWS::EC2::VPCGatewayAttachment"
+        Properties:
+            InternetGatewayId: !Ref EC2InternetGateway
+            VpcId: !GetAtt EC2Subnet.VpcId
+
+    EC2InternetGateway:
+        Type: "AWS::EC2::InternetGateway"
+        Properties:
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "aws-controltower-InternetGateway"
+              - 
+                Key: "Network"
+                Value: "Public"
+
+    EC2NetworkInsightsAnalysis:
+        Type: "AWS::EC2::NetworkInsightsAnalysis"
+        Properties:
+            NetworkInsightsPathId: !Ref EC2NetworkInsightsPath
+
+    EC2NetworkInsightsAnalysis2:
+        Type: "AWS::EC2::NetworkInsightsAnalysis"
+        Properties:
+            NetworkInsightsPathId: !Ref EC2NetworkInsightsPath
+
+    EC2NetworkInsightsPath:
+        Type: "AWS::EC2::NetworkInsightsPath"
+        Properties:
+            Destination: "vpce-06f4e89967f8904d1"
+            DestinationPort: 80
+            Protocol: "tcp"
+            Source: !Ref EC2Instance
+
+    EC2NetworkInterface:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-0fb7034ba6c805a19"
+            PrivateIpAddress: "172.31.94.235"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.94.235"
+                Primary: true
+            SubnetId: !Ref EC2Subnet4
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface2:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-02d8ab10cbba34d33"
+            PrivateIpAddress: "172.31.88.94"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.88.94"
+                Primary: true
+            SubnetId: !Ref EC2Subnet4
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface3:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-06f4e89967f8904d1"
+            PrivateIpAddress: "172.31.93.37"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.93.37"
+                Primary: true
+            SubnetId: !Ref EC2Subnet4
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface4:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-04dd9e4d23977695f"
+            PrivateIpAddress: "172.31.88.39"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.88.39"
+                Primary: true
+            SubnetId: !Ref EC2Subnet4
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface5:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-02b5fa6573f83dac9"
+            PrivateIpAddress: "172.31.80.68"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.80.68"
+                Primary: true
+            SubnetId: !Ref EC2Subnet4
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface6:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: !Sub "ELB app/${ElasticLoadBalancingV2LoadBalancer.LoadBalancerName}/e3751f62f81289a0"
+            PrivateIpAddress: "172.31.2.248"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.2.248"
+                Primary: true
+            SubnetId: !Ref EC2Subnet5
+            SourceDestCheck: true
+            GroupSet: 
+              - !Ref EC2SecurityGroup5
+
+    EC2NetworkInterface7:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-0fb7034ba6c805a19"
+            PrivateIpAddress: "172.31.67.186"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.67.186"
+                Primary: true
+            SubnetId: !Ref EC2Subnet3
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface8:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-04dd9e4d23977695f"
+            PrivateIpAddress: "172.31.74.217"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.74.217"
+                Primary: true
+            SubnetId: !Ref EC2Subnet3
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface9:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: !Sub "ELB app/${ElasticLoadBalancingV2LoadBalancer.LoadBalancerName}/e3751f62f81289a0"
+            PrivateIpAddress: "172.31.96.155"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.96.155"
+                Primary: true
+            SubnetId: !Ref EC2Subnet
+            SourceDestCheck: true
+            GroupSet: 
+              - !Ref EC2SecurityGroup5
+
+    EC2NetworkInterface10:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: ""
+            PrivateIpAddress: !GetAtt EC2Instance2.PrivateIp
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: !GetAtt EC2Instance2.PrivateIp
+                Primary: true
+            SubnetId: !Ref EC2Subnet
+            SourceDestCheck: true
+            GroupSet: 
+              - !Ref EC2SecurityGroup
+
+    EC2NetworkInterface11:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-02b5fa6573f83dac9"
+            PrivateIpAddress: "172.31.70.118"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.70.118"
+                Primary: true
+            SubnetId: !Ref EC2Subnet3
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface12:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-02d8ab10cbba34d33"
+            PrivateIpAddress: "172.31.64.27"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.64.27"
+                Primary: true
+            SubnetId: !Ref EC2Subnet3
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface13:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: ""
+            PrivateIpAddress: !GetAtt EC2Instance.PrivateIp
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: !GetAtt EC2Instance.PrivateIp
+                Primary: true
+            SubnetId: !Ref EC2Subnet3
+            SourceDestCheck: true
+            GroupSet: 
+              - !Ref EC2SecurityGroup3
+
+    EC2NetworkInterface14:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "RDSNetworkInterface"
+            PrivateIpAddress: "172.31.109.22"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.109.22"
+                Primary: true
+            SubnetId: !Ref EC2Subnet
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface15:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-06f4e89967f8904d1"
+            PrivateIpAddress: "172.31.78.169"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.78.169"
+                Primary: true
+            SubnetId: !Ref EC2Subnet3
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface16:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-02d8ab10cbba34d33"
+            PrivateIpAddress: "172.31.40.126"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.40.126"
+                Primary: true
+            SubnetId: !Ref EC2Subnet2
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface17:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-02b5fa6573f83dac9"
+            PrivateIpAddress: "172.31.36.207"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.36.207"
+                Primary: true
+            SubnetId: !Ref EC2Subnet2
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface18:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: ""
+            PrivateIpAddress: !GetAtt EC2Instance3.PrivateIp
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: !GetAtt EC2Instance3.PrivateIp
+                Primary: true
+            SubnetId: !Ref EC2Subnet2
+            SourceDestCheck: true
+            GroupSet: 
+              - !Ref EC2SecurityGroup2
+
+    EC2NetworkInterface19:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-06f4e89967f8904d1"
+            PrivateIpAddress: "172.31.36.52"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.36.52"
+                Primary: true
+            SubnetId: !Ref EC2Subnet2
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface20:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: !Sub "ELB app/${ElasticLoadBalancingV2LoadBalancer.LoadBalancerName}/e3751f62f81289a0"
+            PrivateIpAddress: "172.31.116.105"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.116.105"
+                Primary: true
+            SubnetId: !Ref EC2Subnet6
+            SourceDestCheck: true
+            GroupSet: 
+              - !Ref EC2SecurityGroup5
+
+    EC2NetworkInterface21:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-04dd9e4d23977695f"
+            PrivateIpAddress: "172.31.44.22"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.44.22"
+                Primary: true
+            SubnetId: !Ref EC2Subnet2
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2NetworkInterface22:
+        Type: "AWS::EC2::NetworkInterface"
+        Properties:
+            Description: "VPC Endpoint Interface vpce-0fb7034ba6c805a19"
+            PrivateIpAddress: "172.31.33.139"
+            PrivateIpAddresses: 
+              - 
+                PrivateIpAddress: "172.31.33.139"
+                Primary: true
+            SubnetId: !Ref EC2Subnet2
+            SourceDestCheck: true
+            GroupSet: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2Route:
+        Type: "AWS::EC2::Route"
+        Properties:
+            GatewayId: "vpce-0860a5ea24995cd97"
+            RouteTableId: !Ref EC2RouteTable2
+
+    EC2RouteTable:
+        Type: "AWS::EC2::RouteTable"
+        Properties:
+            VpcId: !GetAtt EC2Subnet.VpcId
+
+    EC2RouteTable2:
+        Type: "AWS::EC2::RouteTable"
+        Properties:
+            VpcId: !GetAtt EC2Subnet.VpcId
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PrivateSubnet2ARouteTable"
+              - 
+                Key: "Network"
+                Value: "Private"
+
+    EC2RouteTable3:
+        Type: "AWS::EC2::RouteTable"
+        Properties:
+            VpcId: !GetAtt EC2Subnet.VpcId
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PrivateSubnet1ARouteTable"
+              - 
+                Key: "Network"
+                Value: "Private"
+
+    EC2RouteTable4:
+        Type: "AWS::EC2::RouteTable"
+        Properties:
+            VpcId: !GetAtt EC2Subnet.VpcId
+            Tags: 
+              - 
+                Key: "Network"
+                Value: "Private"
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PrivateSubnet3ARouteTable"
+
+    EC2RouteTable5:
+        Type: "AWS::EC2::RouteTable"
+        Properties:
+            VpcId: !GetAtt EC2Subnet.VpcId
+            Tags: 
+              - 
+                Key: "Network"
+                Value: "Public"
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PublicSubnetsRouteTable"
+
+    EC2SecurityGroup4:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: "launch-wizard created 2022-06-12T02:47:05.317Z"
+            GroupName: "launch-wizard-2"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            SecurityGroupIngress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 22
+                IpProtocol: "tcp"
+                ToPort: 22
+            SecurityGroupEgress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                IpProtocol: "-1"
+
+    EC2SecurityGroup5:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: !Sub "AWS Elastic Beanstalk Managed Security Group for ${ElasticLoadBalancingV2LoadBalancer}"
+            GroupName: "awseb-AWSEBManagedLBSecurityGroup-zzpi35etm2"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            SecurityGroupIngress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 0
+                IpProtocol: "tcp"
+                ToPort: 65535
+            SecurityGroupEgress: 
+              - 
+                CidrIp: "0.0.0.0/0"
+                FromPort: 80
+                IpProtocol: "tcp"
+                ToPort: 80
+              - 
+                CidrIp: "0.0.0.0/0"
+                IpProtocol: "-1"
+
+    EC2Subnet4:
+        Type: "AWS::EC2::Subnet"
+        Properties:
+            AvailabilityZone: !GetAtt EC2Subnet5.AvailabilityZone
+            CidrBlock: "172.31.80.0/20"
+            VpcId: !GetAtt EC2Subnet5.VpcId
+            MapPublicIpOnLaunch: false
+            Tags: 
+              - 
+                Key: "Network"
+                Value: "Private"
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PrivateSubnet3A"
+
+    EC2Subnet5:
+        Type: "AWS::EC2::Subnet"
+        Properties:
+            AvailabilityZone: !Sub "${AWS::Region}c"
+            CidrBlock: "172.31.0.0/20"
+            VpcId: !GetAtt EC2Subnet6.VpcId
+            MapPublicIpOnLaunch: true
+            Tags: 
+              - 
+                Key: "Network"
+                Value: "Public"
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PublicSubnet3"
+
+    EC2Subnet6:
+        Type: "AWS::EC2::Subnet"
+        Properties:
+            AvailabilityZone: !Sub "${AWS::Region}b"
+            CidrBlock: "172.31.112.0/20"
+            VpcId: !Ref EC2VPC
+            MapPublicIpOnLaunch: true
+            Tags: 
+              - 
+                Key: "Network"
+                Value: "Public"
+              - 
+                Key: "Name"
+                Value: "aws-controltower-PublicSubnet2"
+
+    EC2VPC:
+        Type: "AWS::EC2::VPC"
+        Properties:
+            CidrBlock: "172.31.0.0/16"
+            EnableDnsSupport: true
+            EnableDnsHostnames: true
+            InstanceTenancy: "default"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "aws-controltower-VPC"
+
+    EC2VPCEndpoint:
+        Type: "AWS::EC2::VPCEndpoint"
+        Properties:
+            VpcEndpointType: "Gateway"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+            PolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"*\",\"Resource\":\"*\"}]}"
+            RouteTableIds: 
+              - !Ref EC2RouteTable2
+              - !Ref EC2RouteTable3
+              - !Ref EC2RouteTable4
+            PrivateDnsEnabled: false
+
+    EC2VPCEndpoint2:
+        Type: "AWS::EC2::VPCEndpoint"
+        Properties:
+            VpcEndpointType: "Interface"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            ServiceName: !Sub "com.amazonaws.${AWS::Region}.elasticbeanstalk"
+            PolicyDocument: |
+                {
+                  "Statement": [
+                    {
+                      "Action": "*", 
+                      "Effect": "Allow", 
+                      "Principal": "*", 
+                      "Resource": "*"
+                    }
+                  ]
+                }
+            SubnetIds: 
+              - !Ref EC2Subnet3
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet2
+            PrivateDnsEnabled: true
+            SecurityGroupIds: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2VPCEndpoint3:
+        Type: "AWS::EC2::VPCEndpoint"
+        Properties:
+            VpcEndpointType: "Interface"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            ServiceName: !Sub "com.amazonaws.${AWS::Region}.elasticbeanstalk-health"
+            PolicyDocument: |
+                {
+                  "Statement": [
+                    {
+                      "Action": "*", 
+                      "Effect": "Allow", 
+                      "Principal": "*", 
+                      "Resource": "*"
+                    }
+                  ]
+                }
+            SubnetIds: 
+              - !Ref EC2Subnet3
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet2
+            PrivateDnsEnabled: true
+            SecurityGroupIds: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2VPCEndpoint4:
+        Type: "AWS::EC2::VPCEndpoint"
+        Properties:
+            VpcEndpointType: "Interface"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            ServiceName: !Sub "com.amazonaws.${AWS::Region}.sqs"
+            PolicyDocument: |
+                {
+                  "Statement": [
+                    {
+                      "Action": "*", 
+                      "Effect": "Allow", 
+                      "Principal": "*", 
+                      "Resource": "*"
+                    }
+                  ]
+                }
+            SubnetIds: 
+              - !Ref EC2Subnet3
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet2
+            PrivateDnsEnabled: true
+            SecurityGroupIds: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2VPCEndpoint5:
+        Type: "AWS::EC2::VPCEndpoint"
+        Properties:
+            VpcEndpointType: "Interface"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            ServiceName: !Sub "com.amazonaws.${AWS::Region}.cloudformation"
+            PolicyDocument: |
+                {
+                  "Statement": [
+                    {
+                      "Action": "*", 
+                      "Effect": "Allow", 
+                      "Principal": "*", 
+                      "Resource": "*"
+                    }
+                  ]
+                }
+            SubnetIds: 
+              - !Ref EC2Subnet3
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet2
+            PrivateDnsEnabled: true
+            SecurityGroupIds: 
+              - "sg-0600722c6c6cc9f25"
+
+    EC2VPCEndpoint6:
+        Type: "AWS::EC2::VPCEndpoint"
+        Properties:
+            VpcEndpointType: "Interface"
+            VpcId: !GetAtt EC2Subnet.VpcId
+            ServiceName: !Sub "com.amazonaws.${AWS::Region}.logs"
+            PolicyDocument: |
+                {
+                  "Statement": [
+                    {
+                      "Action": "*", 
+                      "Effect": "Allow", 
+                      "Principal": "*", 
+                      "Resource": "*"
+                    }
+                  ]
+                }
+            SubnetIds: 
+              - !Ref EC2Subnet3
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet2
+            PrivateDnsEnabled: true
+            SecurityGroupIds: 
+              - "sg-0600722c6c6cc9f25"
+
+    ElasticBeanstalkConfigurationTemplate:
+        Type: "AWS::ElasticBeanstalk::ConfigurationTemplate"
+        Properties:
+            ApplicationName: "Postgis-Api"
+            SolutionStackName: "64bit Amazon Linux 2 v5.5.4 running Node.js 16"
+            PlatformArn: !Sub "arn:aws:elasticbeanstalk:${AWS::Region}::platform/Node.js 16 running on 64bit Amazon Linux 2/5.5.4"
+            EnvironmentId: "Postgisapi-env-prod"
+            OptionSettings: 
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "Availability Zones"
+                Value: "Any"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "Cooldown"
+                Value: "360"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "Custom Availability Zones"
+                Value: ""
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "EnableCapacityRebalancing"
+                Value: "false"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "MaxSize"
+                Value: "4"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "MinSize"
+                Value: "1"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "BlockDeviceMappings"
+              - 
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "DisableIMDSv1"
+                Value: "true"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "EC2KeyName"
+                Value: "TestPair"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "IamInstanceProfile"
+                Value: !Ref IAMRole2
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "ImageId"
+                Value: "ami-045e6bfb60639eab0"
+              - 
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "InstanceType"
+                Value: "t2.micro"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "MonitoringInterval"
+                Value: "5 minute"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "RootVolumeIOPS"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "RootVolumeSize"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "RootVolumeThroughput"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "RootVolumeType"
+              - 
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "SSHSourceRestriction"
+                Value: "tcp,22,22,0.0.0.0/0"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "SecurityGroups"
+                Value: !Ref EC2SecurityGroup3
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "BreachDuration"
+                Value: "5"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "EvaluationPeriods"
+                Value: "1"
+              - 
+                ResourceName: "AWSEBAutoScalingScaleDownPolicy"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "LowerBreachScaleIncrement"
+                Value: "-1"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "LowerThreshold"
+                Value: "2000000"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "MeasureName"
+                Value: "NetworkOut"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "Period"
+                Value: "5"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "Statistic"
+                Value: "Average"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "Unit"
+                Value: "Bytes"
+              - 
+                ResourceName: "AWSEBAutoScalingScaleUpPolicy"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "UpperBreachScaleIncrement"
+                Value: "1"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmHigh"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "UpperThreshold"
+                Value: "6000000"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "MaxBatchSize"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "MinInstancesInService"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "PauseTime"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "RollingUpdateEnabled"
+                Value: "false"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "RollingUpdateType"
+                Value: "Time"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "Timeout"
+                Value: "PT30M"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "AppSource"
+                Value: !Sub "https://elasticbeanstalk-platform-assets-${AWS::Region}.s3.amazonaws.com/stalks/eb_nodejs16_amazon_linux_2_1.0.1586.0_20220616142551/sampleapp/EBSampleApp-Nodejs.zip"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "EnvironmentVariables"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "HooksPkgUrl"
+                Value: !Sub "https://elasticbeanstalk-platform-assets-${AWS::Region}.s3.amazonaws.com/stalks/eb_nodejs16_amazon_linux_2_1.0.1586.0_20220616142551/lib/hooks.tar.gz"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "InstancePort"
+                Value: "80"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "InstanceTypeFamily"
+                Value: "t2"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "StaticFiles"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "EnableSpot"
+                Value: "false"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "InstanceTypes"
+                Value: "t2.micro, t2.small"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "SpotFleetOnDemandAboveBasePercentage"
+                Value: "70"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "SpotFleetOnDemandBase"
+                Value: "0"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "SpotMaxPrice"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "SupportedArchitectures"
+                Value: "x86_64"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:ec2:vpc"
+                OptionName: "AssociatePublicIpAddress"
+                Value: "true"
+              - 
+                Namespace: "aws:ec2:vpc"
+                OptionName: "ELBScheme"
+                Value: "public"
+              - 
+                Namespace: "aws:ec2:vpc"
+                OptionName: "ELBSubnets"
+                Value: !Sub "${EC2Subnet},${EC2Subnet5},${EC2Subnet6}"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:ec2:vpc"
+                OptionName: "Subnets"
+                Value: !Sub "${EC2Subnet3},${EC2Subnet4},${EC2Subnet2}"
+              - 
+                ResourceName: "AWSEBSecurityGroup"
+                Namespace: "aws:ec2:vpc"
+                OptionName: "VPCId"
+                Value: !GetAtt EC2Subnet.VpcId
+              - 
+                Namespace: "aws:elasticbeanstalk:application"
+                OptionName: "Application Healthcheck URL"
+                Value: ""
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs"
+                OptionName: "DeleteOnTerminate"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs"
+                OptionName: "RetentionInDays"
+                Value: "7"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs"
+                OptionName: "StreamLogs"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs:health"
+                OptionName: "DeleteOnTerminate"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs:health"
+                OptionName: "HealthStreamingEnabled"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs:health"
+                OptionName: "RetentionInDays"
+                Value: "7"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "BatchSize"
+                Value: "100"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "BatchSizeType"
+                Value: "Percentage"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "DeploymentPolicy"
+                Value: "AllAtOnce"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "IgnoreHealthCheck"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "Timeout"
+                Value: "600"
+              - 
+                Namespace: "aws:elasticbeanstalk:control"
+                OptionName: "DefaultSSHPort"
+                Value: "22"
+              - 
+                Namespace: "aws:elasticbeanstalk:control"
+                OptionName: "LaunchTimeout"
+                Value: "0"
+              - 
+                Namespace: "aws:elasticbeanstalk:control"
+                OptionName: "LaunchType"
+                Value: "Migration"
+              - 
+                Namespace: "aws:elasticbeanstalk:control"
+                OptionName: "RollbackLaunchOnFailure"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "EnvironmentType"
+                Value: "LoadBalanced"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "ExternalExtensionsS3Bucket"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "ExternalExtensionsS3Key"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "LoadBalancerIsShared"
+                Value: "true"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "LoadBalancerType"
+                Value: "application"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "ServiceRole"
+                Value: !GetAtt IAMRole3.Arn
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "DeregistrationDelay"
+                Value: "20"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "HealthCheckInterval"
+                Value: "15"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "HealthCheckPath"
+                Value: "/api/v1/health"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "HealthCheckTimeout"
+                Value: "5"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "HealthyThresholdCount"
+                Value: "3"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "MatcherHTTPCode"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "Port"
+                Value: "80"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "Protocol"
+                Value: "HTTP"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "StickinessEnabled"
+                Value: "false"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "StickinessLBCookieDuration"
+                Value: "86400"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "StickinessType"
+                Value: "lb_cookie"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "UnhealthyThresholdCount"
+                Value: "5"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment:proxy"
+                OptionName: "ProxyServer"
+                Value: "nginx"
+              - 
+                Namespace: "aws:elasticbeanstalk:healthreporting:system"
+                OptionName: "ConfigDocument"
+                Value: "{\"Version\":1,\"CloudWatchMetrics\":{\"Instance\":{\"RootFilesystemUtil\":null,\"CPUIrq\":null,\"LoadAverage5min\":null,\"ApplicationRequests5xx\":null,\"ApplicationRequests4xx\":null,\"CPUUser\":null,\"LoadAverage1min\":null,\"ApplicationLatencyP50\":null,\"CPUIdle\":null,\"InstanceHealth\":null,\"ApplicationLatencyP95\":null,\"ApplicationLatencyP85\":null,\"ApplicationLatencyP90\":null,\"CPUSystem\":null,\"ApplicationLatencyP75\":null,\"CPUSoftirq\":null,\"ApplicationLatencyP10\":null,\"ApplicationLatencyP99\":null,\"ApplicationRequestsTotal\":null,\"ApplicationLatencyP99.9\":null,\"ApplicationRequests3xx\":null,\"ApplicationRequests2xx\":null,\"CPUIowait\":null,\"CPUNice\":null},\"Environment\":{\"InstancesSevere\":null,\"InstancesDegraded\":null,\"ApplicationRequests5xx\":null,\"ApplicationRequests4xx\":null,\"ApplicationLatencyP50\":null,\"ApplicationLatencyP95\":null,\"ApplicationLatencyP85\":null,\"InstancesUnknown\":null,\"ApplicationLatencyP90\":null,\"InstancesInfo\":null,\"InstancesPending\":null,\"ApplicationLatencyP75\":null,\"ApplicationLatencyP10\":null,\"ApplicationLatencyP99\":null,\"ApplicationRequestsTotal\":null,\"InstancesNoData\":null,\"ApplicationLatencyP99.9\":null,\"ApplicationRequests3xx\":null,\"ApplicationRequests2xx\":null,\"InstancesOk\":null,\"InstancesWarning\":null}},\"Rules\":{\"Environment\":{\"ELB\":{\"ELBRequests4xx\":{\"Enabled\":true}},\"Application\":{\"ApplicationRequests4xx\":{\"Enabled\":true}}}}}"
+              - 
+                Namespace: "aws:elasticbeanstalk:healthreporting:system"
+                OptionName: "EnhancedHealthAuthEnabled"
+                Value: "true"
+              - 
+                Namespace: "aws:elasticbeanstalk:healthreporting:system"
+                OptionName: "HealthCheckSuccessThreshold"
+                Value: "Ok"
+              - 
+                Namespace: "aws:elasticbeanstalk:healthreporting:system"
+                OptionName: "SystemType"
+                Value: "enhanced"
+              - 
+                Namespace: "aws:elasticbeanstalk:hostmanager"
+                OptionName: "LogPublicationControl"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions"
+                OptionName: "ManagedActionsEnabled"
+                Value: "true"
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions"
+                OptionName: "PreferredStartTime"
+                Value: "Fri:21:00"
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions"
+                OptionName: "ServiceRoleForManagedUpdates"
+                Value: !GetAtt IAMRole3.Arn
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions:platformupdate"
+                OptionName: "InstanceRefreshEnabled"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions:platformupdate"
+                OptionName: "UpdateLevel"
+                Value: "minor"
+              - 
+                Namespace: "aws:elasticbeanstalk:monitoring"
+                OptionName: "Automatically Terminate Unhealthy Instances"
+                Value: "true"
+              - 
+                Namespace: "aws:elasticbeanstalk:sns:topics"
+                OptionName: "Notification Endpoint"
+              - 
+                Namespace: "aws:elasticbeanstalk:sns:topics"
+                OptionName: "Notification Protocol"
+                Value: "email"
+              - 
+                Namespace: "aws:elasticbeanstalk:sns:topics"
+                OptionName: "Notification Topic ARN"
+              - 
+                Namespace: "aws:elasticbeanstalk:sns:topics"
+                OptionName: "Notification Topic Name"
+              - 
+                Namespace: "aws:elasticbeanstalk:trafficsplitting"
+                OptionName: "EvaluationTime"
+              - 
+                Namespace: "aws:elasticbeanstalk:trafficsplitting"
+                OptionName: "NewVersionPercent"
+              - 
+                Namespace: "aws:elasticbeanstalk:xray"
+                OptionName: "XRayEnabled"
+                Value: "false"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listener:3000"
+                OptionName: "Rules"
+                Value: "default"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:default"
+                OptionName: "HostHeaders"
+                Value: !Sub "Postgisapi-env-prod.eba-nw2d3nsx.${AWS::Region}.elasticbeanstalk.com"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:default"
+                OptionName: "PathPatterns"
+                Value: "/*"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:default"
+                OptionName: "Priority"
+                Value: "1"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:default"
+                OptionName: "Process"
+                Value: "default"
+              - 
+                Namespace: "aws:elbv2:loadbalancer"
+                OptionName: "SecurityGroups"
+                Value: !Ref EC2SecurityGroup5
+              - 
+                Namespace: "aws:elbv2:loadbalancer"
+                OptionName: "SharedLoadBalancer"
+                Value: !Ref ElasticLoadBalancingV2LoadBalancer
+              - 
+                Namespace: "aws:rds:dbinstance"
+                OptionName: "HasCoupledDatabase"
+                Value: "false"
+
+    ElasticBeanstalkConfigurationTemplate2:
+        Type: "AWS::ElasticBeanstalk::ConfigurationTemplate"
+        Properties:
+            ApplicationName: "Geoserver"
+            SolutionStackName: "64bit Amazon Linux 2 v4.3.2 running Tomcat 8.5 Corretto 11"
+            PlatformArn: !Sub "arn:aws:elasticbeanstalk:${AWS::Region}::platform/Tomcat 8.5 with Corretto 11 running on 64bit Amazon Linux 2/4.3.2"
+            EnvironmentId: "Geoserver-env-Prod"
+            OptionSettings: 
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "Availability Zones"
+                Value: "Any"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "Cooldown"
+                Value: "360"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "Custom Availability Zones"
+                Value: ""
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "EnableCapacityRebalancing"
+                Value: "false"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "MaxSize"
+                Value: "4"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:asg"
+                OptionName: "MinSize"
+                Value: "1"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "BlockDeviceMappings"
+              - 
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "DisableIMDSv1"
+                Value: "true"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "EC2KeyName"
+                Value: "TestPair"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "IamInstanceProfile"
+                Value: !Ref IAMRole2
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "ImageId"
+                Value: "ami-0eb2fc9afd1cac5df"
+              - 
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "InstanceType"
+                Value: "t2.micro"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "MonitoringInterval"
+                Value: "5 minute"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "RootVolumeIOPS"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "RootVolumeSize"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "RootVolumeThroughput"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "RootVolumeType"
+              - 
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "SSHSourceRestriction"
+                Value: "tcp,22,22,0.0.0.0/0"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:autoscaling:launchconfiguration"
+                OptionName: "SecurityGroups"
+                Value: !Ref EC2SecurityGroup2
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "BreachDuration"
+                Value: "5"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "EvaluationPeriods"
+                Value: "1"
+              - 
+                ResourceName: "AWSEBAutoScalingScaleDownPolicy"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "LowerBreachScaleIncrement"
+                Value: "-1"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "LowerThreshold"
+                Value: "2000000"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "MeasureName"
+                Value: "NetworkOut"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "Period"
+                Value: "5"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "Statistic"
+                Value: "Average"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmLow"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "Unit"
+                Value: "Bytes"
+              - 
+                ResourceName: "AWSEBAutoScalingScaleUpPolicy"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "UpperBreachScaleIncrement"
+                Value: "1"
+              - 
+                ResourceName: "AWSEBCloudwatchAlarmHigh"
+                Namespace: "aws:autoscaling:trigger"
+                OptionName: "UpperThreshold"
+                Value: "6000000"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "MaxBatchSize"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "MinInstancesInService"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "PauseTime"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "RollingUpdateEnabled"
+                Value: "false"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "RollingUpdateType"
+                Value: "Time"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
+                OptionName: "Timeout"
+                Value: "PT30M"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "AppSource"
+                Value: !Sub "https://elasticbeanstalk-platform-assets-${AWS::Region}.s3.amazonaws.com/stalks/eb_tomcat85corretto11_amazon_linux_2_1.0.1440.0_20221124145355/sampleapp/EBSampleApp-Tomcat.zip"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "EnvironmentVariables"
+                Value: "JDBC_CONNECTION_STRING="
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "HooksPkgUrl"
+                Value: !Sub "https://elasticbeanstalk-platform-assets-${AWS::Region}.s3.amazonaws.com/stalks/eb_tomcat85corretto11_amazon_linux_2_1.0.1440.0_20221124145355/lib/hooks.tar.gz"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "InstancePort"
+                Value: "80"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "InstanceTypeFamily"
+                Value: "t2"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "JVMOptions"
+                Value: "Xmx=256m,JVM Options=-DGEOSERVER_DATA_DIR=/var/lib/geoserver_data,Xms=256m"
+              - 
+                Namespace: "aws:cloudformation:template:parameter"
+                OptionName: "StaticFiles"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "EnableSpot"
+                Value: "false"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "InstanceTypes"
+                Value: "t2.micro, t2.small, t2.xlarge"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "SpotFleetOnDemandAboveBasePercentage"
+                Value: "70"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "SpotFleetOnDemandBase"
+                Value: "0"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "SpotMaxPrice"
+              - 
+                Namespace: "aws:ec2:instances"
+                OptionName: "SupportedArchitectures"
+                Value: "x86_64"
+              - 
+                ResourceName: "AWSEBEC2LaunchTemplate"
+                Namespace: "aws:ec2:vpc"
+                OptionName: "AssociatePublicIpAddress"
+                Value: "false"
+              - 
+                Namespace: "aws:ec2:vpc"
+                OptionName: "ELBScheme"
+                Value: "public"
+              - 
+                Namespace: "aws:ec2:vpc"
+                OptionName: "ELBSubnets"
+                Value: !Sub "${EC2Subnet3},${EC2Subnet4},${EC2Subnet2}"
+              - 
+                ResourceName: "AWSEBAutoScalingGroup"
+                Namespace: "aws:ec2:vpc"
+                OptionName: "Subnets"
+                Value: !Sub "${EC2Subnet3},${EC2Subnet4},${EC2Subnet2}"
+              - 
+                ResourceName: "AWSEBSecurityGroup"
+                Namespace: "aws:ec2:vpc"
+                OptionName: "VPCId"
+                Value: !GetAtt EC2Subnet.VpcId
+              - 
+                Namespace: "aws:elasticbeanstalk:application"
+                OptionName: "Application Healthcheck URL"
+                Value: ""
+              - 
+                Namespace: "aws:elasticbeanstalk:application:environment"
+                OptionName: "JDBC_CONNECTION_STRING"
+                Value: ""
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs"
+                OptionName: "DeleteOnTerminate"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs"
+                OptionName: "RetentionInDays"
+                Value: "7"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs"
+                OptionName: "StreamLogs"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs:health"
+                OptionName: "DeleteOnTerminate"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs:health"
+                OptionName: "HealthStreamingEnabled"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:cloudwatch:logs:health"
+                OptionName: "RetentionInDays"
+                Value: "7"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "BatchSize"
+                Value: "100"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "BatchSizeType"
+                Value: "Percentage"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "DeploymentPolicy"
+                Value: "AllAtOnce"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "IgnoreHealthCheck"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:command"
+                OptionName: "Timeout"
+                Value: "600"
+              - 
+                Namespace: "aws:elasticbeanstalk:container:tomcat:jvmoptions"
+                OptionName: "JVM Options"
+                Value: "-DGEOSERVER_DATA_DIR=/var/lib/geoserver_data"
+              - 
+                Namespace: "aws:elasticbeanstalk:container:tomcat:jvmoptions"
+                OptionName: "Xms"
+                Value: "256m"
+              - 
+                Namespace: "aws:elasticbeanstalk:container:tomcat:jvmoptions"
+                OptionName: "Xmx"
+                Value: "256m"
+              - 
+                Namespace: "aws:elasticbeanstalk:control"
+                OptionName: "DefaultSSHPort"
+                Value: "22"
+              - 
+                Namespace: "aws:elasticbeanstalk:control"
+                OptionName: "LaunchTimeout"
+                Value: "0"
+              - 
+                Namespace: "aws:elasticbeanstalk:control"
+                OptionName: "LaunchType"
+                Value: "Migration"
+              - 
+                Namespace: "aws:elasticbeanstalk:control"
+                OptionName: "RollbackLaunchOnFailure"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "EnvironmentType"
+                Value: "LoadBalanced"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "ExternalExtensionsS3Bucket"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "ExternalExtensionsS3Key"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "LoadBalancerIsShared"
+                Value: "true"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "LoadBalancerType"
+                Value: "application"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment"
+                OptionName: "ServiceRole"
+                Value: !GetAtt IAMRole3.Arn
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "DeregistrationDelay"
+                Value: "20"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "HealthCheckInterval"
+                Value: "15"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "HealthCheckPath"
+                Value: "/geoserver/index.html"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "HealthCheckTimeout"
+                Value: "5"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "HealthyThresholdCount"
+                Value: "3"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "MatcherHTTPCode"
+                Value: "200"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "Port"
+                Value: "80"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "Protocol"
+                Value: "HTTP"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "StickinessEnabled"
+                Value: "false"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "StickinessLBCookieDuration"
+                Value: "86400"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "StickinessType"
+                Value: "lb_cookie"
+              - 
+                ResourceName: "AWSEBV2LoadBalancerTargetGroup"
+                Namespace: "aws:elasticbeanstalk:environment:process:default"
+                OptionName: "UnhealthyThresholdCount"
+                Value: "5"
+              - 
+                Namespace: "aws:elasticbeanstalk:environment:proxy"
+                OptionName: "ProxyServer"
+                Value: "nginx"
+              - 
+                Namespace: "aws:elasticbeanstalk:healthreporting:system"
+                OptionName: "ConfigDocument"
+                Value: "{\"Version\":1,\"CloudWatchMetrics\":{\"Instance\":{\"RootFilesystemUtil\":null,\"CPUIrq\":null,\"LoadAverage5min\":null,\"ApplicationRequests5xx\":null,\"ApplicationRequests4xx\":null,\"CPUUser\":null,\"LoadAverage1min\":null,\"ApplicationLatencyP50\":null,\"CPUIdle\":null,\"InstanceHealth\":null,\"ApplicationLatencyP95\":null,\"ApplicationLatencyP85\":null,\"ApplicationLatencyP90\":null,\"CPUSystem\":null,\"ApplicationLatencyP75\":null,\"CPUSoftirq\":null,\"ApplicationLatencyP10\":null,\"ApplicationLatencyP99\":null,\"ApplicationRequestsTotal\":null,\"ApplicationLatencyP99.9\":null,\"ApplicationRequests3xx\":null,\"ApplicationRequests2xx\":null,\"CPUIowait\":null,\"CPUNice\":null},\"Environment\":{\"InstancesSevere\":null,\"InstancesDegraded\":null,\"ApplicationRequests5xx\":null,\"ApplicationRequests4xx\":null,\"ApplicationLatencyP50\":null,\"ApplicationLatencyP95\":null,\"ApplicationLatencyP85\":null,\"InstancesUnknown\":null,\"ApplicationLatencyP90\":null,\"InstancesInfo\":null,\"InstancesPending\":null,\"ApplicationLatencyP75\":null,\"ApplicationLatencyP10\":null,\"ApplicationLatencyP99\":null,\"ApplicationRequestsTotal\":null,\"InstancesNoData\":null,\"ApplicationLatencyP99.9\":null,\"ApplicationRequests3xx\":null,\"ApplicationRequests2xx\":null,\"InstancesOk\":null,\"InstancesWarning\":null}},\"Rules\":{\"Environment\":{\"ELB\":{\"ELBRequests4xx\":{\"Enabled\":true}},\"Application\":{\"ApplicationRequests4xx\":{\"Enabled\":false}}}}}"
+              - 
+                Namespace: "aws:elasticbeanstalk:healthreporting:system"
+                OptionName: "EnhancedHealthAuthEnabled"
+                Value: "true"
+              - 
+                Namespace: "aws:elasticbeanstalk:healthreporting:system"
+                OptionName: "HealthCheckSuccessThreshold"
+                Value: "Ok"
+              - 
+                Namespace: "aws:elasticbeanstalk:healthreporting:system"
+                OptionName: "SystemType"
+                Value: "enhanced"
+              - 
+                Namespace: "aws:elasticbeanstalk:hostmanager"
+                OptionName: "LogPublicationControl"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions"
+                OptionName: "ManagedActionsEnabled"
+                Value: "true"
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions"
+                OptionName: "PreferredStartTime"
+                Value: "Fri:10:00"
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions"
+                OptionName: "ServiceRoleForManagedUpdates"
+                Value: !GetAtt IAMRole3.Arn
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions:platformupdate"
+                OptionName: "InstanceRefreshEnabled"
+                Value: "false"
+              - 
+                Namespace: "aws:elasticbeanstalk:managedactions:platformupdate"
+                OptionName: "UpdateLevel"
+                Value: "minor"
+              - 
+                Namespace: "aws:elasticbeanstalk:monitoring"
+                OptionName: "Automatically Terminate Unhealthy Instances"
+                Value: "true"
+              - 
+                Namespace: "aws:elasticbeanstalk:sns:topics"
+                OptionName: "Notification Endpoint"
+              - 
+                Namespace: "aws:elasticbeanstalk:sns:topics"
+                OptionName: "Notification Protocol"
+                Value: "email"
+              - 
+                Namespace: "aws:elasticbeanstalk:sns:topics"
+                OptionName: "Notification Topic ARN"
+              - 
+                Namespace: "aws:elasticbeanstalk:sns:topics"
+                OptionName: "Notification Topic Name"
+              - 
+                Namespace: "aws:elasticbeanstalk:trafficsplitting"
+                OptionName: "EvaluationTime"
+              - 
+                Namespace: "aws:elasticbeanstalk:trafficsplitting"
+                OptionName: "NewVersionPercent"
+              - 
+                Namespace: "aws:elasticbeanstalk:xray"
+                OptionName: "XRayEnabled"
+                Value: "false"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listener:443"
+                OptionName: "Rules"
+                Value: "default,geoserver"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:default"
+                OptionName: "HostHeaders"
+                Value: !Sub "indoornav-geoserver.${AWS::Region}.elasticbeanstalk.com"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:default"
+                OptionName: "PathPatterns"
+                Value: "/*"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:default"
+                OptionName: "Priority"
+                Value: "2"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:default"
+                OptionName: "Process"
+                Value: "default"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:geoserver"
+                OptionName: "HostHeaders"
+                Value: !Sub "geoserver.appfactoryuwp.com,indoornav-geoserver.${AWS::Region}.elasticbeanstalk.com"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:geoserver"
+                OptionName: "PathPatterns"
+                Value: ""
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:geoserver"
+                OptionName: "Priority"
+                Value: "1"
+              - 
+                ResourceName: ":default"
+                Namespace: "aws:elbv2:listenerrule:geoserver"
+                OptionName: "Process"
+                Value: "default"
+              - 
+                Namespace: "aws:elbv2:loadbalancer"
+                OptionName: "SecurityGroups"
+                Value: !Ref EC2SecurityGroup5
+              - 
+                Namespace: "aws:elbv2:loadbalancer"
+                OptionName: "SharedLoadBalancer"
+                Value: !Ref ElasticLoadBalancingV2LoadBalancer
+              - 
+                Namespace: "aws:rds:dbinstance"
+                OptionName: "HasCoupledDatabase"
+                Value: "false"
+
+    ElasticLoadBalancingV2LoadBalancer:
+        Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+        Properties:
+            Name: "geoserver-loadbalancer"
+            Scheme: "internet-facing"
+            Type: "application"
+            Subnets: 
+              - !Ref EC2Subnet5
+              - !Ref EC2Subnet
+              - !Ref EC2Subnet6
+            SecurityGroups: 
+              - "sg-06d3adfcaae60136f"
+            IpAddressType: "ipv4"
+            LoadBalancerAttributes: 
+              - 
+                Key: "access_logs.s3.enabled"
+                Value: "false"
+              - 
+                Key: "idle_timeout.timeout_seconds"
+                Value: "60"
+              - 
+                Key: "deletion_protection.enabled"
+                Value: "false"
+              - 
+                Key: "routing.http2.enabled"
+                Value: "true"
+              - 
+                Key: "routing.http.drop_invalid_header_fields.enabled"
+                Value: "false"
+              - 
+                Key: "routing.http.xff_client_port.enabled"
+                Value: "false"
+              - 
+                Key: "routing.http.preserve_host_header.enabled"
+                Value: "false"
+              - 
+                Key: "routing.http.xff_header_processing.mode"
+                Value: "append"
+              - 
+                Key: "load_balancing.cross_zone.enabled"
+                Value: "true"
+              - 
+                Key: "routing.http.desync_mitigation_mode"
+                Value: "defensive"
+              - 
+                Key: "waf.fail_open.enabled"
+                Value: "false"
+              - 
+                Key: "routing.http.x_amzn_tls_version_and_cipher_suite.enabled"
+                Value: "false"
+
+    ElasticLoadBalancingV2TargetGroup:
+        Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+        Properties:
+            HealthCheckIntervalSeconds: 15
+            HealthCheckPath: "/geoserver/index.html"
+            Port: 80
+            Protocol: "HTTP"
+            HealthCheckPort: "traffic-port"
+            HealthCheckProtocol: "HTTP"
+            HealthCheckTimeoutSeconds: 5
+            UnhealthyThresholdCount: 5
+            TargetType: "instance"
+            Matcher: 
+                HttpCode: "200"
+            HealthyThresholdCount: 3
+            VpcId: !GetAtt EC2Subnet.VpcId
+            Name: "awseb-geoserve-default-dupb3"
+            HealthCheckEnabled: true
+            TargetGroupAttributes: 
+              - 
+                Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.count"
+                Value: "1"
+              - 
+                Key: "stickiness.enabled"
+                Value: "false"
+              - 
+                Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.percentage"
+                Value: "off"
+              - 
+                Key: "deregistration_delay.timeout_seconds"
+                Value: "20"
+              - 
+                Key: "target_group_health.dns_failover.minimum_healthy_targets.count"
+                Value: "1"
+              - 
+                Key: "stickiness.app_cookie.cookie_name"
+                Value: ""
+              - 
+                Key: "stickiness.type"
+                Value: "lb_cookie"
+              - 
+                Key: "stickiness.lb_cookie.duration_seconds"
+                Value: "86400"
+              - 
+                Key: "slow_start.duration_seconds"
+                Value: "0"
+              - 
+                Key: "stickiness.app_cookie.duration_seconds"
+                Value: "86400"
+              - 
+                Key: "target_group_health.dns_failover.minimum_healthy_targets.percentage"
+                Value: "off"
+              - 
+                Key: "load_balancing.cross_zone.enabled"
+                Value: "use_load_balancer_configuration"
+              - 
+                Key: "load_balancing.algorithm.type"
+                Value: "round_robin"
+            Targets: 
+              - 
+                Id: !Ref EC2Instance3
+                Port: 80
+
+    ElasticLoadBalancingV2TargetGroup2:
+        Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+        Properties:
+            HealthCheckIntervalSeconds: 15
+            HealthCheckPath: "/api/v1/health"
+            Port: 80
+            Protocol: "HTTP"
+            HealthCheckPort: "traffic-port"
+            HealthCheckProtocol: "HTTP"
+            HealthCheckTimeoutSeconds: 5
+            UnhealthyThresholdCount: 5
+            TargetType: "instance"
+            Matcher: 
+                HttpCode: "200"
+            HealthyThresholdCount: 3
+            VpcId: !GetAtt EC2Subnet.VpcId
+            Name: "awseb-postgisa-default-ifnmn"
+            HealthCheckEnabled: true
+            TargetGroupAttributes: 
+              - 
+                Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.count"
+                Value: "1"
+              - 
+                Key: "stickiness.enabled"
+                Value: "false"
+              - 
+                Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.percentage"
+                Value: "off"
+              - 
+                Key: "deregistration_delay.timeout_seconds"
+                Value: "20"
+              - 
+                Key: "target_group_health.dns_failover.minimum_healthy_targets.count"
+                Value: "1"
+              - 
+                Key: "stickiness.app_cookie.cookie_name"
+                Value: ""
+              - 
+                Key: "stickiness.type"
+                Value: "lb_cookie"
+              - 
+                Key: "stickiness.lb_cookie.duration_seconds"
+                Value: "86400"
+              - 
+                Key: "slow_start.duration_seconds"
+                Value: "0"
+              - 
+                Key: "stickiness.app_cookie.duration_seconds"
+                Value: "86400"
+              - 
+                Key: "target_group_health.dns_failover.minimum_healthy_targets.percentage"
+                Value: "off"
+              - 
+                Key: "load_balancing.cross_zone.enabled"
+                Value: "use_load_balancer_configuration"
+              - 
+                Key: "load_balancing.algorithm.type"
+                Value: "round_robin"
+            Targets: 
+              - 
+                Id: !Ref EC2Instance
+                Port: 80
+
+    IAMRole:
+        Type: "AWS::IAM::Role"
+        Properties:
+            Path: "/"
+            RoleName: "AWSControlTower_VPCFlowLogsRole"
+            AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"vpc-flow-logs.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+            MaxSessionDuration: 3600
+            ManagedPolicyArns: 
+              - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
+    NeptuneDBSubnetGroup:
+        Type: "AWS::Neptune::DBSubnetGroup"
+        Properties:
+            DBSubnetGroupName: !Sub "default-${EC2Subnet.VpcId}"
+            DBSubnetGroupDescription: "Created from the RDS Management Console"
+            SubnetIds: 
+              - !Ref EC2Subnet6
+              - !Ref EC2Subnet2
+              - !Ref EC2Subnet5
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet
+              - !Ref EC2Subnet3
+
+    RDSDBInstance:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+            DBInstanceIdentifier: "indoornav-postgis"
+            AllocatedStorage: 20
+            DBInstanceClass: "db.t3.micro"
+            Engine: "postgres"
+            MasterUsername: "postgres"
+            MasterUserPassword: "postgres4life"
+            PreferredBackupWindow: "05:12-05:42"
+            BackupRetentionPeriod: 7
+            AvailabilityZone: !GetAtt EC2Subnet.AvailabilityZone
+            PreferredMaintenanceWindow: "tue:08:39-tue:09:09"
+            MultiAZ: false
+            EngineVersion: "14.3"
+            AutoMinorVersionUpgrade: true
+            LicenseModel: "postgresql-license"
+            PubliclyAccessible: false
+            StorageType: "gp2"
+            Port: 5432
+            StorageEncrypted: true
+            KmsKeyId: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/056e7474-cf58-449b-9039-d3c7e533296f"
+            CopyTagsToSnapshot: true
+            MonitoringInterval: 0
+            EnableIAMDatabaseAuthentication: false
+            EnablePerformanceInsights: true
+            PerformanceInsightsKMSKeyId: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/056e7474-cf58-449b-9039-d3c7e533296f"
+            PerformanceInsightsRetentionPeriod: 7
+            DeletionProtection: false
+            DBSubnetGroupName: !Sub "default-${EC2Subnet.VpcId}"
+            VPCSecurityGroups: 
+              - "sg-0600722c6c6cc9f25"
+            MaxAllocatedStorage: 1000
+            DBParameterGroupName: "default.postgres14"
+            OptionGroupName: "default:postgres-14"
+            CACertificateIdentifier: "rds-ca-2019"
+
+    RDSDBSubnetGroup:
+        Type: "AWS::RDS::DBSubnetGroup"
+        Properties:
+            DBSubnetGroupDescription: "Created from the RDS Management Console"
+            DBSubnetGroupName: !Sub "default-${EC2Subnet.VpcId}"
+            SubnetIds: 
+              - !Ref EC2Subnet6
+              - !Ref EC2Subnet2
+              - !Ref EC2Subnet5
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet
+              - !Ref EC2Subnet3
+
+    EC2Route2:
+        Type: "AWS::EC2::Route"
+        Properties:
+            DestinationCidrBlock: "0.0.0.0/0"
+            GatewayId: !Ref EC2InternetGateway
+            RouteTableId: !Ref EC2RouteTable5
+
+    AutoScalingAutoScalingGroup:
+        Type: "AWS::AutoScaling::AutoScalingGroup"
+        Properties:
+            AutoScalingGroupName: "awseb-e-3xurj5vapd-stack-AWSEBAutoScalingGroup-DQYS6AAFJ9Y6"
+            LaunchTemplate: 
+                LaunchTemplateId: !Ref EC2LaunchTemplate3
+                LaunchTemplateName: "AWSEBEC2LaunchTemplate_xPjZ1UAgI6L8"
+                Version: "2"
+            MinSize: 1
+            MaxSize: 4
+            DesiredCapacity: 1
+            Cooldown: 360
+            AvailabilityZones: 
+              - !GetAtt EC2Subnet.AvailabilityZone
+              - !GetAtt EC2Subnet2.AvailabilityZone
+              - !GetAtt EC2Subnet4.AvailabilityZone
+            TargetGroupARNs: 
+              - !Ref ElasticLoadBalancingV2TargetGroup2
+            HealthCheckType: "EC2"
+            HealthCheckGracePeriod: 0
+            VPCZoneIdentifier: 
+              - !Ref EC2Subnet3
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet2
+            TerminationPolicies: 
+              - "Default"
+            ServiceLinkedRoleARN: !Sub "arn:aws:iam::${AWS::AccountId}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Postgisapi-env-prod"
+                PropagateAtLaunch: true
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-3xurj5vapd"
+                PropagateAtLaunch: true
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Postgisapi-env-prod"
+                PropagateAtLaunch: true
+            NewInstancesProtectedFromScaleIn: false
+            CapacityRebalance: false
+
+    AutoScalingAutoScalingGroup2:
+        Type: "AWS::AutoScaling::AutoScalingGroup"
+        Properties:
+            AutoScalingGroupName: "awseb-e-q3nhzdugrp-stack-AWSEBAutoScalingGroup-HOPGNV4PBSN1"
+            LaunchTemplate: 
+                LaunchTemplateId: !Ref EC2LaunchTemplate2
+                LaunchTemplateName: "AWSEBEC2LaunchTemplate_062fAu3QP5kL"
+                Version: "4"
+            MinSize: 1
+            MaxSize: 4
+            DesiredCapacity: 1
+            Cooldown: 360
+            AvailabilityZones: 
+              - !GetAtt EC2Subnet.AvailabilityZone
+              - !GetAtt EC2Subnet2.AvailabilityZone
+              - !GetAtt EC2Subnet4.AvailabilityZone
+            TargetGroupARNs: 
+              - !Ref ElasticLoadBalancingV2TargetGroup
+            HealthCheckType: "EC2"
+            HealthCheckGracePeriod: 0
+            VPCZoneIdentifier: 
+              - !Ref EC2Subnet3
+              - !Ref EC2Subnet4
+              - !Ref EC2Subnet2
+            TerminationPolicies: 
+              - "Default"
+            ServiceLinkedRoleARN: !Sub "arn:aws:iam::${AWS::AccountId}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Prod"
+                PropagateAtLaunch: true
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-q3nhzdugrp"
+                PropagateAtLaunch: true
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Prod"
+                PropagateAtLaunch: true
+            NewInstancesProtectedFromScaleIn: false
+            CapacityRebalance: false
+
+    AutoScalingAutoScalingGroup3:
+        Type: "AWS::AutoScaling::AutoScalingGroup"
+        Properties:
+            AutoScalingGroupName: "awseb-e-vwa44jhbzp-stack-AWSEBAutoScalingGroup-1JMY7X6J0CIAV"
+            LaunchTemplate: 
+                LaunchTemplateId: !Ref EC2LaunchTemplate
+                LaunchTemplateName: "AWSEBEC2LaunchTemplate_5VFLmRXDrFT9"
+                Version: "3"
+            MinSize: 1
+            MaxSize: 1
+            DesiredCapacity: 1
+            Cooldown: 360
+            AvailabilityZones: 
+              - !GetAtt EC2Subnet.AvailabilityZone
+            HealthCheckType: "EC2"
+            HealthCheckGracePeriod: 0
+            VPCZoneIdentifier: 
+              - !Ref EC2Subnet
+            TerminationPolicies: 
+              - "Default"
+            ServiceLinkedRoleARN: !Sub "arn:aws:iam::${AWS::AccountId}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+            Tags: 
+              - 
+                Key: "Name"
+                Value: "Geoserver-env-Dev"
+                PropagateAtLaunch: true
+              - 
+                Key: "elasticbeanstalk:environment-id"
+                Value: "e-vwa44jhbzp"
+                PropagateAtLaunch: true
+              - 
+                Key: "elasticbeanstalk:environment-name"
+                Value: "Geoserver-env-Dev"
+                PropagateAtLaunch: true
+            NewInstancesProtectedFromScaleIn: false
+            CapacityRebalance: false
+
+    EC2LaunchTemplate:
+        Type: "AWS::EC2::LaunchTemplate"
+        Properties:
+            LaunchTemplateName: "AWSEBEC2LaunchTemplate_5VFLmRXDrFT9"
+            LaunchTemplateData: 
+                UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTIKU0xFRVBfVElNRV9NQVg9MzYwMAp3aGlsZSB0cnVlOyBkbyAKICBjdXJsIGh0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1wbGF0Zm9ybS1hc3NldHMtdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vc3RhbGtzL2ViX3RvbWNhdDg1Y29ycmV0dG8xMV9hbWF6b25fbGludXhfMl8xLjAuMTQwOS4wXzIwMjIxMDI5MDUxMDI2L2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgL2Jpbi9iYXNoIC90bXAvZWJib290c3RyYXAuc2ggICAgICdodHRwczovL2Nsb3VkZm9ybWF0aW9uLXdhaXRjb25kaXRpb24tdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vYXJuJTNBYXdzJTNBY2xvdWRmb3JtYXRpb24lM0F1cy1lYXN0LTElM0ExNjc1NDM5ODYyNDYlM0FzdGFjay9hd3NlYi1lLXZ3YTQ0amhienAtc3RhY2svMGNlNWFkYzAtMzZiNi0xMWVkLWIyZjgtMGE1ZWU0NTg5MTZkL0FXU0VCSW5zdGFuY2VMYXVuY2hXYWl0SGFuZGxlP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LURhdGU9MjAyMjA5MTdUMTgyNTEyWiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmWC1BbXotRXhwaXJlcz04NjM5OSZYLUFtei1DcmVkZW50aWFsPUFLSUE2TDdRNE9XVDJHWllIRzdOJTJGMjAyMjA5MTclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1TaWduYXR1cmU9NzFmYWFiY2I5Mzg0NDVlNTJkNWM5ZThiYjE2MDZhZjExM2JlMjBkY2RkY2EwM2JhYThjMGY2MWE4NjdhMzEzZCcgICAgJ2Fybjphd3M6Y2xvdWRmb3JtYXRpb246dXMtZWFzdC0xOjE2NzU0Mzk4NjI0NjpzdGFjay9hd3NlYi1lLXZ3YTQ0amhienAtc3RhY2svMGNlNWFkYzAtMzZiNi0xMWVkLWIyZjgtMGE1ZWU0NTg5MTZkJyAgICAnY2EzYzBjYWYtOGNhOC00NDZmLWIwMmUtMmRiODZjNWIwMTU2JyAgICAnaHR0cHM6Ly9lbGFzdGljYmVhbnN0YWxrLWhlYWx0aC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbScgICAgJycgICAgJ2h0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1wbGF0Zm9ybS1hc3NldHMtdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vc3RhbGtzL2ViX3RvbWNhdDg1Y29ycmV0dG8xMV9hbWF6b25fbGludXhfMl8xLjAuMTQwOS4wXzIwMjIxMDI5MDUxMDI2JyAgICAndXMtZWFzdC0xJwogICAgUkVTVUxUPSQ/CiAgICBpZiBbWyAiJFJFU1VMVCIgLW5lIDAgXV07IHRoZW4gCiAgICAgIHNsZWVwX2RlbGF5IAogICAgZWxzZSAKICAgICAgZXhpdCAwICAKICAgIGZpIAogIGZpIApkb25lCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PS0tIA=="
+                IamInstanceProfile: 
+                    Name: !Ref IAMRole2
+                KeyName: "TestPair"
+                NetworkInterfaces: 
+                  - 
+                    AssociatePublicIpAddress: true
+                    DeviceIndex: 0
+                    Groups: 
+                      - !Ref EC2SecurityGroup
+                    SubnetId: !Ref EC2Subnet
+                ImageId: "ami-0d1b64d60913b0b4c"
+                InstanceType: "t2.micro"
+                Monitoring: 
+                    Enabled: false
+                MetadataOptions: 
+                    HttpPutResponseHopLimit: 1
+                    HttpTokens: "required"
+
+    EC2LaunchTemplate2:
+        Type: "AWS::EC2::LaunchTemplate"
+        Properties:
+            LaunchTemplateName: "AWSEBEC2LaunchTemplate_062fAu3QP5kL"
+            LaunchTemplateData: 
+                UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTIKU0xFRVBfVElNRV9NQVg9MzYwMAp3aGlsZSB0cnVlOyBkbyAKICBjdXJsIGh0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1wbGF0Zm9ybS1hc3NldHMtdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vc3RhbGtzL2ViX3RvbWNhdDg1Y29ycmV0dG8xMV9hbWF6b25fbGludXhfMl8xLjAuMTQ0MC4wXzIwMjIxMTI0MTQ1MzU1L2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgL2Jpbi9iYXNoIC90bXAvZWJib290c3RyYXAuc2ggICAgICdodHRwczovL2Nsb3VkZm9ybWF0aW9uLXdhaXRjb25kaXRpb24tdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vYXJuJTNBYXdzJTNBY2xvdWRmb3JtYXRpb24lM0F1cy1lYXN0LTElM0ExNjc1NDM5ODYyNDYlM0FzdGFjay9hd3NlYi1lLXEzbmh6ZHVncnAtc3RhY2svOGVkNGJkMzAtMzg5Ni0xMWVkLWIwMDUtMGU3NzUzMjJkMDc3L0FXU0VCSW5zdGFuY2VMYXVuY2hXYWl0SGFuZGxlP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LURhdGU9MjAyMjA5MjBUMDM0NDQ5WiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmWC1BbXotRXhwaXJlcz04NjM5OSZYLUFtei1DcmVkZW50aWFsPUFLSUE2TDdRNE9XVDJHWllIRzdOJTJGMjAyMjA5MjAlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1TaWduYXR1cmU9YmZmMDlmYTMxZmIwZTBiZmI1YWU4MGQzYjNiMDM1N2ZmYjZlZGU2NDA3MzQ2ZTMyZDYzZWE0YTcxMmI4YmY0ZicgICAgJ2Fybjphd3M6Y2xvdWRmb3JtYXRpb246dXMtZWFzdC0xOjE2NzU0Mzk4NjI0NjpzdGFjay9hd3NlYi1lLXEzbmh6ZHVncnAtc3RhY2svOGVkNGJkMzAtMzg5Ni0xMWVkLWIwMDUtMGU3NzUzMjJkMDc3JyAgICAnYWZiNmMzMTQtOTk0Zi00YzZlLTlmZjUtYWYxODEzMWRlMTJhJyAgICAnaHR0cHM6Ly9lbGFzdGljYmVhbnN0YWxrLWhlYWx0aC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbScgICAgJycgICAgJ2h0dHBzOi8vZWxhc3RpY2JlYW5zdGFsay1wbGF0Zm9ybS1hc3NldHMtdXMtZWFzdC0xLnMzLmFtYXpvbmF3cy5jb20vc3RhbGtzL2ViX3RvbWNhdDg1Y29ycmV0dG8xMV9hbWF6b25fbGludXhfMl8xLjAuMTQ0MC4wXzIwMjIxMTI0MTQ1MzU1JyAgICAndXMtZWFzdC0xJwogICAgUkVTVUxUPSQ/CiAgICBpZiBbWyAiJFJFU1VMVCIgLW5lIDAgXV07IHRoZW4gCiAgICAgIHNsZWVwX2RlbGF5IAogICAgZWxzZSAKICAgICAgZXhpdCAwICAKICAgIGZpIAogIGZpIApkb25lCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PS0tIA=="
+                IamInstanceProfile: 
+                    Name: !Ref IAMRole2
+                KeyName: "TestPair"
+                NetworkInterfaces: 
+                  - 
+                    AssociatePublicIpAddress: false
+                    DeviceIndex: 0
+                    Groups: 
+                      - !Ref EC2SecurityGroup2
+                    SubnetId: !Ref EC2Subnet3
+                ImageId: "ami-0eb2fc9afd1cac5df"
+                InstanceType: "t2.micro"
+                Monitoring: 
+                    Enabled: false
+                MetadataOptions: 
+                    HttpPutResponseHopLimit: 1
+                    HttpTokens: "required"
+
+    EC2SubnetRouteTableAssociation:
+        Type: "AWS::EC2::SubnetRouteTableAssociation"
+        Properties:
+            RouteTableId: !Ref EC2RouteTable2
+            SubnetId: !Ref EC2Subnet2
+
+    EC2SubnetRouteTableAssociation2:
+        Type: "AWS::EC2::SubnetRouteTableAssociation"
+        Properties:
+            RouteTableId: !Ref EC2RouteTable3
+            SubnetId: !Ref EC2Subnet3
+
+    EC2SubnetRouteTableAssociation3:
+        Type: "AWS::EC2::SubnetRouteTableAssociation"
+        Properties:
+            RouteTableId: !Ref EC2RouteTable4
+            SubnetId: !Ref EC2Subnet4
+
+    EC2SubnetRouteTableAssociation4:
+        Type: "AWS::EC2::SubnetRouteTableAssociation"
+        Properties:
+            RouteTableId: !Ref EC2RouteTable5
+            SubnetId: !Ref EC2Subnet
+
+    EC2SubnetRouteTableAssociation5:
+        Type: "AWS::EC2::SubnetRouteTableAssociation"
+        Properties:
+            RouteTableId: !Ref EC2RouteTable5
+            SubnetId: !Ref EC2Subnet6
+
+    EC2SubnetRouteTableAssociation6:
+        Type: "AWS::EC2::SubnetRouteTableAssociation"
+        Properties:
+            RouteTableId: !Ref EC2RouteTable5
+            SubnetId: !Ref EC2Subnet5
+
+    AutoScalingScalingPolicy:
+        Type: "AWS::AutoScaling::ScalingPolicy"
+        Properties:
+            AutoScalingGroupName: !Ref AutoScalingAutoScalingGroup
+            PolicyType: "SimpleScaling"
+            AdjustmentType: "ChangeInCapacity"
+            ScalingAdjustment: -1
+
+    AutoScalingScalingPolicy2:
+        Type: "AWS::AutoScaling::ScalingPolicy"
+        Properties:
+            AutoScalingGroupName: !Ref AutoScalingAutoScalingGroup
+            PolicyType: "SimpleScaling"
+            AdjustmentType: "ChangeInCapacity"
+            ScalingAdjustment: 1
+
+    AutoScalingScalingPolicy3:
+        Type: "AWS::AutoScaling::ScalingPolicy"
+        Properties:
+            AutoScalingGroupName: !Ref AutoScalingAutoScalingGroup2
+            PolicyType: "SimpleScaling"
+            AdjustmentType: "ChangeInCapacity"
+            ScalingAdjustment: -1
+
+    AutoScalingScalingPolicy4:
+        Type: "AWS::AutoScaling::ScalingPolicy"
+        Properties:
+            AutoScalingGroupName: !Ref AutoScalingAutoScalingGroup2
+            PolicyType: "SimpleScaling"
+            AdjustmentType: "ChangeInCapacity"
+            ScalingAdjustment: 1
+
+    IAMSAMLProvider:
+        Type: "AWS::IAM::SAMLProvider"
+        Properties:
+            Name: "AWSSSO_6bc9f489e6677c06_DO_NOT_DELETE"
+            SamlMetadataDocument: !Sub |
+                <?xml version="1.0" encoding="UTF-8"?><md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://portal.sso.${AWS::Region}.amazonaws.com/saml/assertion/MTE1Mzk5Njk2MTI5X2lucy1iMTQxNWI0ZDc3M2NkNWY5">
+                    <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+                        <md:KeyDescriptor use="signing">
+                            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                                <ds:X509Data>
+                                    <ds:X509Certificate>MIIDAzCCAeugAwIBAgIBATANBgkqhkiG9w0BAQsFADBFMRYwFAYDVQQDDA1hbWF6b25hd3MuY29tMQ0wCwYDVQQLDARJREFTMQ8wDQYDVQQKDAZBbWF6b24xCzAJBgNVBAYTAlVTMB4XDTIyMDYwODAyNTM0OFoXDTI3MDYwODAyNTM0OFowRTEWMBQGA1UEAwwNYW1hem9uYXdzLmNvbTENMAsGA1UECwwESURBUzEPMA0GA1UECgwGQW1hem9uMQswCQYDVQQGEwJVUzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANUncktgpEIGOAJ+obWcVYHJIGxNAbDbn+NJMDmKpkCXqy8I215zGCRi2vq4TMdC4UKJNPe4URGDi45hLHbuWK+6ak2xSgNeP5zZUT8tgVH9SdAPiRsCxsDdYL/fp7Rxq8bsfcaGjKCTvt4b3BN+W0YGWJBbTaQG0DNfTgIisF64iJ2VxEQ9w7HGyGuo/ixpD+5rj8vFHeYZATNfLC04d1y7I8eYVBd/KcM4a4W2UwBcc2kSvOU0Rykx8U6PmhjlnMRDAJLjd7wMAc6PJUi8UHHeaqFWazmORtnHJKmXYRgsojSdWn+C0UXfKtGDq+9u1QactC2tpRmLTSvEZoK5Vc8CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAJ+ywYiFFUXGbfjhm0GY0q1gsQIq+Oe6toNEDeHoDLpysorqlABiTBo8caUpa0LhKo65iT/cdXSI17j9xJYUmskwHfYtBgy+VH1xhvzWVVh2Ab3GkL4UOyoj/e7Zdn0AZUuMk5TyfePl6Gl5FDIMDWwpxNErGpsm1OD+CBbszsBkm6C0OcAkIEX6czRgrMQz63mRQFdMQ+3xbJpHNbT7QArcrvlje7Mu9J7jXkaOSSux6TszpCEXU6hZh/jGn696o6BkqhGyYWjSwg33ooyaBm3TSOneAsaznaFvjhoNQA0ngntd/uw9xtTLAB3PnqYscECPLj+DQ9T6zD0frdsGmvg==</ds:X509Certificate>
+                                </ds:X509Data>
+                            </ds:KeyInfo>
+                        </md:KeyDescriptor>
+                        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://portal.sso.${AWS::Region}.amazonaws.com/saml/logout/MTE1Mzk5Njk2MTI5X2lucy1iMTQxNWI0ZDc3M2NkNWY5"/>
+                        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://portal.sso.${AWS::Region}.amazonaws.com/saml/logout/MTE1Mzk5Njk2MTI5X2lucy1iMTQxNWI0ZDc3M2NkNWY5"/>
+                        <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+                        <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://portal.sso.${AWS::Region}.amazonaws.com/saml/assertion/MTE1Mzk5Njk2MTI5X2lucy1iMTQxNWI0ZDc3M2NkNWY5"/>
+                        <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://portal.sso.${AWS::Region}.amazonaws.com/saml/assertion/MTE1Mzk5Njk2MTI5X2lucy1iMTQxNWI0ZDc3M2NkNWY5"/>
+                    </md:IDPSSODescriptor>
+                </md:EntityDescriptor>
+                
+
+    IAMServiceLinkedRole:
+        Type: "AWS::IAM::ServiceLinkedRole"
+        Properties:
+            AWSServiceName: "rds.amazonaws.com"
+            Description: "Allows Amazon RDS to manage AWS resources on your behalf"
+
+    MemoryDBACL:
+        Type: "AWS::MemoryDB::ACL"
+        Properties:
+            ACLName: "open-access"
+            UserNames: 
+              - "default"
+
+    MemoryDBParameterGroup:
+        Type: "AWS::MemoryDB::ParameterGroup"
+        Properties:
+            Description: "Default parameter group for memorydb_redis6"
+            Family: "memorydb_redis6"
+            Parameters: 
+              - 
+                Name: "acllog-max-len"
+                Value: "128"
+                Description: "The maximum length of the ACL Log"
+                DataType: "integer"
+                AllowedValues: "1-10000"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "activedefrag"
+                Value: "no"
+                Description: "Enabled active memory defragmentation"
+                DataType: "string"
+                AllowedValues: "yes,no"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "active-defrag-cycle-max"
+                Value: "75"
+                Description: "Maximal effort for defrag in CPU percentage"
+                DataType: "integer"
+                AllowedValues: "1-75"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "active-defrag-cycle-min"
+                Value: "5"
+                Description: "Minimal effort for defrag in CPU percentage"
+                DataType: "integer"
+                AllowedValues: "1-75"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "active-defrag-ignore-bytes"
+                Value: "104857600"
+                Description: "Minimum amount of fragmentation waste to start active defrag"
+                DataType: "integer"
+                AllowedValues: "1048576-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "active-defrag-max-scan-fields"
+                Value: "1000"
+                Description: "Maximum number of set/hash/zset/list fields that will be processed from the main dictionary scan"
+                DataType: "integer"
+                AllowedValues: "1-1000000"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "active-defrag-threshold-lower"
+                Value: "10"
+                Description: "Minimum percentage of fragmentation to start active defrag"
+                DataType: "integer"
+                AllowedValues: "1-100"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "active-defrag-threshold-upper"
+                Value: "100"
+                Description: "Maximum percentage of fragmentation at which we use maximum effort"
+                DataType: "integer"
+                AllowedValues: "1-100"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "active-expire-effort"
+                Value: "1"
+                Description: "The amount of effort that redis uses to expire items in the active expiration job"
+                DataType: "integer"
+                AllowedValues: "1-10"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "activerehashing"
+                Value: "yes"
+                Description: "Apply rehashing or not"
+                DataType: "string"
+                AllowedValues: "yes,no"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "client-output-buffer-limit-normal-hard-limit"
+                Value: "0"
+                Description: "Normal client output buffer hard limit in bytes"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "client-output-buffer-limit-normal-soft-limit"
+                Value: "0"
+                Description: "Normal client output buffer soft limit in bytes"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "client-output-buffer-limit-normal-soft-seconds"
+                Value: "0"
+                Description: "Normal client output buffer soft limit in seconds"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "client-output-buffer-limit-pubsub-hard-limit"
+                Value: "33554432"
+                Description: "Pubsub client output buffer hard limit in bytes"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "client-output-buffer-limit-pubsub-soft-limit"
+                Value: "8388608"
+                Description: "Pubsub client output buffer soft limit in bytes"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "client-output-buffer-limit-pubsub-soft-seconds"
+                Value: "60"
+                Description: "Pubsub client output buffer soft limit in seconds"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "hash-max-ziplist-entries"
+                Value: "512"
+                Description: "The maximum number of hash entries in order for the dataset to be compressed"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "hash-max-ziplist-value"
+                Value: "64"
+                Description: "The threshold of biggest hash entries in order for the dataset to be compressed"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "hll-sparse-max-bytes"
+                Value: "3000"
+                Description: "HyperLogLog sparse representation bytes limit"
+                DataType: "integer"
+                AllowedValues: "1-16000"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "lazyfree-lazy-eviction"
+                Value: "no"
+                Description: "Perform an asynchronous delete on evictions"
+                DataType: "string"
+                AllowedValues: "yes,no"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "lazyfree-lazy-expire"
+                Value: "no"
+                Description: "Perform an asynchronous delete on expired keys"
+                DataType: "string"
+                AllowedValues: "yes,no"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "lazyfree-lazy-server-del"
+                Value: "no"
+                Description: "Perform an asynchronous delete on key updates"
+                DataType: "string"
+                AllowedValues: "yes,no"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "lazyfree-lazy-user-del"
+                Value: "no"
+                Description: "Specifies whether the default behavior of DEL command acts the same as UNLINK"
+                DataType: "string"
+                AllowedValues: "yes,no"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "lfu-decay-time"
+                Value: "1"
+                Description: "The amount of time in minutes to decrement the key counter for LFU eviction policyd"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "lfu-log-factor"
+                Value: "10"
+                Description: "The log factor for incrementing key counter for LFU eviction policy"
+                DataType: "integer"
+                AllowedValues: "1-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "list-compress-depth"
+                Value: "0"
+                Description: "Number of quicklist ziplist nodes from each side of the list to exclude from compression. The head and tail of the list are always uncompressed for fast push/pop operations"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "maxmemory-policy"
+                Value: "noeviction"
+                Description: "Max memory policy"
+                DataType: "string"
+                AllowedValues: "volatile-lru,allkeys-lru,volatile-lfu,allkeys-lfu,volatile-random,allkeys-random,volatile-ttl,noeviction"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "maxmemory-samples"
+                Value: "3"
+                Description: "Max memory samples"
+                DataType: "integer"
+                AllowedValues: "1-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "notify-keyspace-events"
+                Description: "The keyspace events for Redis to notify Pub/Sub clients about. By default all notifications are disabled"
+                DataType: "string"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "set-max-intset-entries"
+                Value: "512"
+                Description: "The limit in the size of the set in order for the dataset to be compressed"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "slowlog-log-slower-than"
+                Value: "10000"
+                Description: "The execution time, in microseconds, to exceed in order for the command to get logged. Note that a negative number disables the slow log, while a value of zero forces the logging of every command"
+                DataType: "integer"
+                AllowedValues: "-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "slowlog-max-len"
+                Value: "128"
+                Description: "The length of the slow log. There is no limit to this length. Just be aware that it will consume memory. You can reclaim memory used by the slow log with SLOWLOG RESET."
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "stream-node-max-bytes"
+                Value: "4096"
+                Description: "The maximum size of a single node in a stream in bytes"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "stream-node-max-entries"
+                Value: "100"
+                Description: "The maximum number of items a single node in a stream can contain"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "tcp-keepalive"
+                Value: "300"
+                Description: "If non-zero, send ACKs every given number of seconds"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "timeout"
+                Value: "0"
+                Description: "Close connection if client is idle for a given number of seconds, or never if 0"
+                DataType: "integer"
+                AllowedValues: "0,20-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "tracking-table-max-keys"
+                Value: "1000000"
+                Description: "The maximum number of keys allowed for the tracking table for client side caching"
+                DataType: "integer"
+                AllowedValues: "1-100000000"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "zset-max-ziplist-entries"
+                Value: "128"
+                Description: "The maximum number of sorted set entries in order for the dataset to be compressed"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+              - 
+                Name: "zset-max-ziplist-value"
+                Value: "64"
+                Description: "The threshold of biggest sorted set entries in order for the dataset to be compressed"
+                DataType: "integer"
+                AllowedValues: "0-"
+                MinimumEngineVersion: "6.2.4"
+
+    CertificateManagerCertificate:
+        Type: "AWS::CertificateManager::Certificate"
+        Properties:
+            DomainName: "geoserver.appfactoryuwp.com"
+            SubjectAlternativeNames: 
+              - "geoserver.appfactoryuwp.com"
+            DomainValidationOptions: 
+              - 
+                DomainName: "geoserver.appfactoryuwp.com"
+                ValidationDomain: "geoserver.appfactoryuwp.com"
+            CertificateTransparencyLoggingPreference: "ENABLED"
+
+    EC2LaunchTemplate3:
+        Type: "AWS::EC2::LaunchTemplate"
+        Properties:
+            LaunchTemplateName: "AWSEBEC2LaunchTemplate_xPjZ1UAgI6L8"
+            LaunchTemplateData: 
+                UserData: "Q29udGVudC1UeXBlOiBtdWx0aXBhcnQvbWl4ZWQ7IGJvdW5kYXJ5PSI9PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0iCk1JTUUtVmVyc2lvbjogMS4wCgotLT09PT09PT09PT09PT09PTUxODkwNjUzNzcyMjI4OTg0MDc9PQpDb250ZW50LVR5cGU6IHRleHQvY2xvdWQtY29uZmlnOyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0iY2xvdWQtY29uZmlnLnR4dCIKCiNjbG91ZC1jb25maWcKcmVwb191cGdyYWRlOiBub25lCnJlcG9fcmVsZWFzZXZlcjogMi4wCmNsb3VkX2ZpbmFsX21vZHVsZXM6CiAtIFtzY3JpcHRzLXVzZXIsIGFsd2F5c10KCi0tPT09PT09PT09PT09PT09NTE4OTA2NTM3NzIyMjg5ODQwNz09CkNvbnRlbnQtVHlwZTogdGV4dC94LXNoZWxsc2NyaXB0OyBjaGFyc2V0PSJ1cy1hc2NpaSIKTUlNRS1WZXJzaW9uOiAxLjAKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogN2JpdApDb250ZW50LURpc3Bvc2l0aW9uOiBhdHRhY2htZW50OyBmaWxlbmFtZT0idXNlci1kYXRhLnR4dCIKCiMhL2Jpbi9iYXNoCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy9lYi1jZm4taW5pdC5sb2d8bG9nZ2VyIC10IFtlYi1jZm4taW5pdF0gLXMgMj4vZGV2L2NvbnNvbGUpIDI+JjEKZWNobyBbYGRhdGUgLXUgKyIlWS0lbS0lZFQlSDolTTolU1oiYF0gU3RhcnRlZCBFQiBVc2VyIERhdGEKc2V0IC14CgoKZnVuY3Rpb24gc2xlZXBfZGVsYXkgCnsKICBpZiAoKCAkU0xFRVBfVElNRSA8ICRTTEVFUF9USU1FX01BWCApKTsgdGhlbiAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUUKICAgIHNsZWVwICRTTEVFUF9USU1FICAKICAgIFNMRUVQX1RJTUU9JCgoJFNMRUVQX1RJTUUgKiAyKSkgCiAgZWxzZSAKICAgIGVjaG8gU2xlZXBpbmcgJFNMRUVQX1RJTUVfTUFYICAKICAgIHNsZWVwICRTTEVFUF9USU1FX01BWCAgCiAgZmkKfQoKIyBFeGVjdXRpbmcgYm9vdHN0cmFwIHNjcmlwdApTTEVFUF9USU1FPTEwClNMRUVQX1RJTUVfTUFYPTM2MDAKd2hpbGUgdHJ1ZTsgZG8gCiAgY3VybCBodHRwczovL2VsYXN0aWNiZWFuc3RhbGstcGxhdGZvcm0tYXNzZXRzLXVzLWVhc3QtMS5zMy5hbWF6b25hd3MuY29tL3N0YWxrcy9lYl9ub2RlanMxNl9hbWF6b25fbGludXhfMl8xLjAuMTU4Ni4wXzIwMjIwNjE2MTQyNTUxL2xpYi9Vc2VyRGF0YVNjcmlwdC5zaCA+IC90bXAvZWJib290c3RyYXAuc2ggCiAgUkVTVUxUPSQ/CiAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgc2xlZXBfZGVsYXkgCiAgZWxzZQogICAgU0xFRVBfVElNRT0yCiAgICAvYmluL2Jhc2ggL3RtcC9lYmJvb3RzdHJhcC5zaCAgICAgJ2h0dHBzOi8vY2xvdWRmb3JtYXRpb24td2FpdGNvbmRpdGlvbi11cy1lYXN0LTEuczMuYW1hem9uYXdzLmNvbS9hcm4lM0Fhd3MlM0FjbG91ZGZvcm1hdGlvbiUzQXVzLWVhc3QtMSUzQTE2NzU0Mzk4NjI0NiUzQXN0YWNrL2F3c2ViLWUtM3h1cmo1dmFwZC1zdGFjay81YmVjMDQ4MC1lYzE3LTExZWMtOGNhZS0wYTZlMzcwZjBlYjEvQVdTRUJJbnN0YW5jZUxhdW5jaFdhaXRIYW5kbGU/WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotRGF0ZT0yMDIyMDYxNFQxOTIyNDlaJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZYLUFtei1FeHBpcmVzPTg2Mzk5JlgtQW16LUNyZWRlbnRpYWw9QUtJQTZMN1E0T1dUMkdaWUhHN04lMkYyMDIyMDYxNCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LVNpZ25hdHVyZT0yNTU0ZjIyOTI2N2IwMWM2MDVhMGZhOTg5NmI0MWUwZmJjNmRlMmVkYzE0MDA3YTcwYjljMDJmMGY4NjE1MDAzJyAgICAnYXJuOmF3czpjbG91ZGZvcm1hdGlvbjp1cy1lYXN0LTE6MTY3NTQzOTg2MjQ2OnN0YWNrL2F3c2ViLWUtM3h1cmo1dmFwZC1zdGFjay81YmVjMDQ4MC1lYzE3LTExZWMtOGNhZS0wYTZlMzcwZjBlYjEnICAgICdhMDBkNmE4My00NWQyLTQ4MGEtYmVjYi0yMTRhNzNkMTYwMzInICAgICdodHRwczovL2VsYXN0aWNiZWFuc3RhbGstaGVhbHRoLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tJyAgICAnJyAgICAnaHR0cHM6Ly9lbGFzdGljYmVhbnN0YWxrLXBsYXRmb3JtLWFzc2V0cy11cy1lYXN0LTEuczMuYW1hem9uYXdzLmNvbS9zdGFsa3MvZWJfbm9kZWpzMTZfYW1hem9uX2xpbnV4XzJfMS4wLjE1ODYuMF8yMDIyMDYxNjE0MjU1MScgICAgJ3VzLWVhc3QtMScKICAgIFJFU1VMVD0kPwogICAgaWYgW1sgIiRSRVNVTFQiIC1uZSAwIF1dOyB0aGVuIAogICAgICBzbGVlcF9kZWxheSAKICAgIGVsc2UgCiAgICAgIGV4aXQgMCAgCiAgICBmaSAKICBmaSAKZG9uZQoKLS09PT09PT09PT09PT09PT01MTg5MDY1Mzc3MjIyODk4NDA3PT0tLSA="
+                IamInstanceProfile: 
+                    Name: !Ref IAMRole2
+                SecurityGroupIds: 
+                  - !Ref EC2SecurityGroup3
+                KeyName: "TestPair"
+                ImageId: "ami-045e6bfb60639eab0"
+                InstanceType: "t2.micro"
+                Monitoring: 
+                    Enabled: false
+                MetadataOptions: 
+                    HttpPutResponseHopLimit: 1
+                    HttpTokens: "required"
+
+    ElastiCacheUser:
+        Type: "AWS::ElastiCache::User"
+        Properties:
+            UserId: "default"
+            UserName: "default"
+            Engine: "redis"
+            AccessString: "on ~* +@all"
+            NoPasswordRequired: true
+
+    ElasticBeanstalkApplicationVersion:
+        Type: "AWS::ElasticBeanstalk::ApplicationVersion"
+        Properties:
+            ApplicationName: "Geoserver"
+            Description: ""
+            SourceBundle: 
+                S3Bucket: !Ref S3Bucket
+                S3Key: "2022298Gmf-geoserver-source.zip"
+
+    ElasticBeanstalkApplicationVersion2:
+        Type: "AWS::ElasticBeanstalk::ApplicationVersion"
+        Properties:
+            ApplicationName: "Geoserver"
+            Description: ""
+            SourceBundle: 
+                S3Bucket: !Ref S3Bucket
+                S3Key: "2022298zoI-geoserver-source.zip"
+
+    ElasticBeanstalkApplicationVersion3:
+        Type: "AWS::ElasticBeanstalk::ApplicationVersion"
+        Properties:
+            ApplicationName: "Geoserver"
+            SourceBundle: 
+                S3Bucket: !Ref S3Bucket
+                S3Key: "2022298KIu-geoserver-source.zip"
+
+    ElasticBeanstalkApplicationVersion4:
+        Type: "AWS::ElasticBeanstalk::ApplicationVersion"
+        Properties:
+            ApplicationName: "Geoserver"
+            SourceBundle: 
+                S3Bucket: !Ref S3Bucket
+                S3Key: "2022298pRf-geoserver-source.zip"
+
+    ElasticBeanstalkApplicationVersion5:
+        Type: "AWS::ElasticBeanstalk::ApplicationVersion"
+        Properties:
+            ApplicationName: "Geoserver"
+            SourceBundle: 
+                S3Bucket: !Ref S3Bucket
+                S3Key: "2022263Bnr-geoserver-source.zip"
+
+    ElasticBeanstalkApplicationVersion6:
+        Type: "AWS::ElasticBeanstalk::ApplicationVersion"
+        Properties:
+            ApplicationName: "Postgis-Api"
+            SourceBundle: 
+                S3Bucket: !Ref S3Bucket
+                S3Key: "2022165d00-postgiapi-source-v1.zip"
+
+    ElasticLoadBalancingV2Listener:
+        Type: "AWS::ElasticLoadBalancingV2::Listener"
+        Properties:
+            LoadBalancerArn: !Ref ElasticLoadBalancingV2LoadBalancer
+            Port: 3000
+            Protocol: "HTTPS"
+            SslPolicy: "ELBSecurityPolicy-2016-08"
+            Certificates: 
+              - 
+                CertificateArn: !Ref CertificateManagerCertificate
+            DefaultActions: 
+              - 
+                Order: 1
+                TargetGroupArn: !Ref ElasticLoadBalancingV2TargetGroup2
+                Type: "forward"
+
+    ElasticLoadBalancingV2Listener2:
+        Type: "AWS::ElasticLoadBalancingV2::Listener"
+        Properties:
+            LoadBalancerArn: !Ref ElasticLoadBalancingV2LoadBalancer
+            Port: 443
+            Protocol: "HTTPS"
+            SslPolicy: "ELBSecurityPolicy-2016-08"
+            Certificates: 
+              - 
+                CertificateArn: !Ref CertificateManagerCertificate
+            DefaultActions: 
+              - 
+                FixedResponseConfig: 
+                    StatusCode: "503"
+                    ContentType: "text/plain"
+                Order: 1
+                Type: "fixed-response"
+
+    ElasticLoadBalancingV2ListenerRule:
+        Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+        Properties:
+            Priority: "1"
+            ListenerArn: !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:listener/app/${ElasticLoadBalancingV2LoadBalancer.LoadBalancerName}/e3751f62f81289a0/352a1972e3d1a557"
+            Conditions: 
+              - 
+                Field: "host-header"
+                Values: 
+                  - "geoserver.appfactoryuwp.com"
+                  - !Sub "indoornav-geoserver.${AWS::Region}.elasticbeanstalk.com"
+            Actions: 
+              - 
+                Type: "forward"
+                TargetGroupArn: !Ref ElasticLoadBalancingV2TargetGroup
+                ForwardConfig: 
+                    TargetGroups: 
+                      - 
+                        TargetGroupArn: !Ref ElasticLoadBalancingV2TargetGroup
+                        Weight: 1
+                    TargetGroupStickinessConfig: 
+                        Enabled: false
+
+    ElasticLoadBalancingV2ListenerRule2:
+        Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+        Properties:
+            Priority: "2"
+            ListenerArn: !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:listener/app/${ElasticLoadBalancingV2LoadBalancer.LoadBalancerName}/e3751f62f81289a0/352a1972e3d1a557"
+            Conditions: 
+              - 
+                Field: "host-header"
+                Values: 
+                  - !Sub "indoornav-geoserver.${AWS::Region}.elasticbeanstalk.com"
+              - 
+                Field: "path-pattern"
+                Values: 
+                  - "/*"
+            Actions: 
+              - 
+                Type: "forward"
+                TargetGroupArn: !Ref ElasticLoadBalancingV2TargetGroup
+                ForwardConfig: 
+                    TargetGroups: 
+                      - 
+                        TargetGroupArn: !Ref ElasticLoadBalancingV2TargetGroup
+                        Weight: 1
+                    TargetGroupStickinessConfig: 
+                        Enabled: false
+
+    IAMRole2:
+        Type: "AWS::IAM::Role"
+        Properties:
+            Path: "/"
+            RoleName: "aws-elasticbeanstalk-ec2-role"
+            AssumeRolePolicyDocument: "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+            MaxSessionDuration: 3600
+            ManagedPolicyArns: 
+              - "arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker"
+              - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
+              - "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
+
+    IAMRole3:
+        Type: "AWS::IAM::Role"
+        Properties:
+            Path: "/"
+            RoleName: "aws-elasticbeanstalk-service-role"
+            AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"elasticbeanstalk.amazonaws.com\"},\"Action\":\"sts:AssumeRole\",\"Condition\":{\"StringEquals\":{\"sts:ExternalId\":\"elasticbeanstalk\"}}}]}"
+            MaxSessionDuration: 3600
+            ManagedPolicyArns: 
+              - "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkEnhancedHealth"
+              - "arn:aws:iam::aws:policy/AWSElasticBeanstalkManagedUpdatesCustomerRolePolicy"
+
+    IAMServiceLinkedRole2:
+        Type: "AWS::IAM::ServiceLinkedRole"
+        Properties:
+            AWSServiceName: "managedupdates.elasticbeanstalk.amazonaws.com"
+
+    IAMServiceLinkedRole3:
+        Type: "AWS::IAM::ServiceLinkedRole"
+        Properties:
+            AWSServiceName: "elasticloadbalancing.amazonaws.com"
+            Description: "Allows ELB to call AWS services on your behalf."
+
+    S3Bucket:
+        Type: "AWS::S3::Bucket"
+        Properties:
+            BucketName: !Sub "elasticbeanstalk-${AWS::Region}-${AWS::AccountId}"
+
+    S3BucketPolicy:
+        Type: "AWS::S3::BucketPolicy"
+        Properties:
+            Bucket: !Ref S3Bucket
+            PolicyDocument: 
+                Version: "2008-10-17"
+                Statement: 
+                  - 
+                    Sid: "eb-ad78f54a-f239-4c90-adda-49e5f56cb51e"
+                    Effect: "Allow"
+                    Principal: 
+                        AWS: !GetAtt IAMRole2.Arn
+                    Action: "s3:PutObject"
+                    Resource: !Sub "arn:aws:s3:::${S3Bucket}/resources/environments/logs/*"
+                  - 
+                    Sid: "eb-af163bf3-d27b-4712-b795-d1e33e331ca4"
+                    Effect: "Allow"
+                    Principal: 
+                        AWS: !GetAtt IAMRole2.Arn
+                    Action: 
+                      - "s3:ListBucket"
+                      - "s3:ListBucketVersions"
+                      - "s3:GetObject"
+                      - "s3:GetObjectVersion"
+                    Resource: 
+                      - !Sub "arn:aws:s3:::${S3Bucket}"
+                      - !Sub "arn:aws:s3:::${S3Bucket}/resources/environments/*"
+                  - 
+                    Sid: "eb-58950a8c-feb6-11e2-89e0-0800277d041b"
+                    Effect: "Deny"
+                    Principal: 
+                        AWS: "*"
+                    Action: "s3:DeleteBucket"
+                    Resource: !Sub "arn:aws:s3:::${S3Bucket}"
+
+    S3BucketPolicy2:
+        Type: "AWS::S3::BucketPolicy"
+        Properties:
+            Bucket: "geoserver-config-data"
+            PolicyDocument: 
+                Version: "2012-10-17"
+                Statement: 
+                  - 
+                    Sid: "Grant Object Access"
+                    Effect: "Allow"
+                    Principal: 
+                        AWS: !GetAtt IAMRole2.Arn
+                    Action: 
+                      - "s3:GetObject"
+                      - "s3:GetObjectVersion"
+                    Resource: "arn:aws:s3:::geoserver-config-data/*"
+                  - 
+                    Sid: "Grant Bucket Access"
+                    Effect: "Allow"
+                    Principal: 
+                        AWS: !GetAtt IAMRole2.Arn
+                    Action: "s3:ListBucket"
+                    Resource: "arn:aws:s3:::geoserver-config-data"
+
+    EC2Volume:
+        Type: "AWS::EC2::Volume"
+        Properties:
+            AvailabilityZone: !GetAtt EC2Subnet2.AvailabilityZone
+            Encrypted: false
+            Size: 8
+            VolumeType: "gp2"
+            SnapshotId: "snap-0c1c6d56bf27e0cb6"
+            MultiAttachEnabled: false
+
+    EC2Volume2:
+        Type: "AWS::EC2::Volume"
+        Properties:
+            AvailabilityZone: !GetAtt EC2Subnet.AvailabilityZone
+            Encrypted: false
+            Size: 8
+            VolumeType: "gp2"
+            SnapshotId: "snap-02ea0a6e716bff347"
+            MultiAttachEnabled: false
+
+    EC2Volume3:
+        Type: "AWS::EC2::Volume"
+        Properties:
+            AvailabilityZone: !GetAtt EC2Subnet.AvailabilityZone
+            Encrypted: false
+            Size: 8
+            VolumeType: "gp2"
+            SnapshotId: "snap-0520895bc4b74ac31"
+            MultiAttachEnabled: false
+

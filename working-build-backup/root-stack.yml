@@ -1,0 +1,140 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ---
+  Template for Indoor Navigation stack
+
+#Metadata: 
+
+#Parameters: 
+
+#Mappings: 
+
+#Conditions: 
+
+Resources: 
+  VPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 172.31.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-VPC
+
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-InternetGateway
+
+  VPCGatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+  Route:
+    Type: AWS::EC2::Route
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway   
+          
+  IndoorNavEC2PostGisInstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: "ami-0beaa649c482330f7"
+      InstanceType: t2.micro
+      KeyName: IndoorNavKey
+      SubnetId: !GetAtt NestedStackNetwork.Outputs.EC2SubnetID
+      SecurityGroupIds:
+        - !GetAtt NestedStackSecurity.Outputs.IndoorNavPostgisEnvProdSecurityGroupID
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+            VolumeType: gp2
+            DeleteOnTermination: true
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-EC2-Post-GIS-Instance
+          
+  IndoorNavEC2GeoServerProd:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: "ami-0beaa649c482330f7"
+      InstanceType: t2.micro
+      KeyName: IndoorNavKey
+      SubnetId: !GetAtt NestedStackNetwork.Outputs.EC2Subnet3ID
+      SecurityGroupIds:
+        - !GetAtt NestedStackSecurity.Outputs.IndoorNavGeoserverEnvProdSecurityGroupID
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+            VolumeType: gp2
+            DeleteOnTermination: true
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-EC2-Geo-Server-Prod
+
+  IndoorNavEC2GeoServerDev:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: "ami-0beaa649c482330f7"
+      InstanceType: t2.micro
+      KeyName: IndoorNavKey
+      SubnetId: !GetAtt NestedStackNetwork.Outputs.EC2Subnet2ID
+      SecurityGroupIds:
+        - !GetAtt NestedStackSecurity.Outputs.IndoorNavGeoserverEnvDevSecurityGroupID
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+            VolumeType: gp2
+            DeleteOnTermination: true
+      Tags:
+        - Key: Name
+          Value: Indoor-Nav-EC2-Geo-Server-Dev
+
+  EIP:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      InstanceId: !Ref IndoorNavEC2GeoServerDev  
+
+  NestedStackSecurity:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties: 
+      Parameters:
+        IndoorNavVpcID: !Ref VPC
+      TemplateURL: https://cf-templates-1u29eskzgdjiq-us-east-2.s3.us-east-2.amazonaws.com/indoor-nav/security.yml
+      TimeoutInMinutes: 60
+
+  NestedStackNetwork:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties: 
+      Parameters:
+        IndoorNavVpcID: !Ref VPC
+        IndoorNavNaclID: !GetAtt NestedStackNetworkAcl.Outputs.IndoorNavNetworkAclID
+        DefaultSecurityGroupID: !GetAtt NestedStackSecurity.Outputs.DefaultSecurityGroupID
+      TemplateURL: https://cf-templates-1u29eskzgdjiq-us-east-2.s3.us-east-2.amazonaws.com/indoor-nav/network.yml
+      TimeoutInMinutes: 60
+
+  NestedStackNetworkAcl:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties: 
+      Parameters:
+        IndoorNavVpcID: !Ref VPC
+      TemplateURL: https://cf-templates-1u29eskzgdjiq-us-east-2.s3.us-east-2.amazonaws.com/indoor-nav/nacl.yml
+      TimeoutInMinutes: 60
+
+
+# Outputs:
